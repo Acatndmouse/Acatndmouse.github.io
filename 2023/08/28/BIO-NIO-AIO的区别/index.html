@@ -33,7 +33,7 @@
 <meta property="article:published_time" content="2023-08-28T02:06:33.000Z">
 <meta property="article:modified_time" content="2023-08-28T02:06:33.000Z">
 <meta property="article:author" content="Hua">
-<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Netty">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://acatndmouse.github.io/2023/08/28/BIO-NIO-AIO%E7%9A%84%E5%8C%BA%E5%88%AB/640.webp">
     
@@ -630,7 +630,7 @@
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">0</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">1</div>
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
@@ -692,13 +692,29 @@
     
 
     
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
     
         <span class="article-tags article-meta-item">
             <i class="fa-regular fa-tags"></i>&nbsp;
             <ul>
                 
                     <li>
-                        <a href="/tags/Java/">Java</a>&nbsp;
+                        <a href="/tags/Netty/">Netty</a>&nbsp;
                     </li>
                 
             </ul>
@@ -742,7 +758,7 @@
 <li><p><strong>阻塞&#x2F;非阻塞</strong> 阻塞指的是当你去调用一个获取洗衣机信息方法的时候，如果这个时候没有洗衣机，那么方法就会一直阻塞，直到能查询到洗衣机的信息才会返回结果；非阻塞指的是当你调用一个获取洗衣机信息方法的时候，如果当时没有查到信息，你不会一直阻塞在那里，你这时可以去做别的事，但是你会时不时的去检查下是否有结果，然后再阻塞获取下，但是这不会影响你做其它事。</p>
 </li>
 </ul>
-<div class="tabs" id="tab-lanmu1"><ul class="nav-tabs"><li class="tab active"><a class="#lanmu1-1">BIO(同步阻塞)</a></li><li class="tab"><a class="#lanmu1-2">NIO(同步非阻塞)</a></li><li class="tab"><a class="#lanmu1-3">AIO(异步非阻塞)</a></li></ul><div class="tab-content"><div class="tab-pane active" id="lanmu1-1"><p>我们经常使用的就是BIO，在我们学习编程基础javaSE的时候，应该都会学过socket通信，这里面使用的就是同步阻塞。以下是BIO的模型：</p>
+<div class="tabs" id="tab-lanmu1"><ul class="nav-tabs"><li class="tab active"><a class="#lanmu1-1">BIO(同步阻塞)</a></li><li class="tab"><a class="#lanmu1-2">NIO(同步非阻塞)</a></li><li class="tab"><a class="#lanmu1-3">AIO(异步非阻塞)</a></li></ul><div class="tab-content"><div class="tab-pane active" id="lanmu1-1"><p>我们经常使用的就是BIO，在我们学习编程基础javaSE的时候，应该都学过socket通信，这里面使用的就是同步阻塞。以下是BIO的模型：</p>
 <img  
                      lazyload
                      src="/images/loading.svg"
@@ -753,11 +769,8 @@
 <p>在BIO模型中，一个连接会对应一个处理线程，如果服务端使用单线程进行处理，后续连接将会一直阻塞；</p>
 <ul>
 <li><p>缺点：</p>
-</li>
-<li><ul>
-<li>代码中的read,accept操作是阻塞操作，如果连接之后，服务端一直不发送数据，将会一直阻塞当前线程，浪费资源。</li>
-<li>如果连接数很多，意味着创建的线程数量就会越来越多，会造成服务器压力太大，后续优化成线程池处理方式，勉强解决了此问题。</li>
-</ul>
+<p>代码中的read,accept操作是阻塞操作，如果连接之后，服务端一直不发送数据，将会一直阻塞当前线程，浪费资源。</p>
+<p>如果连接数很多，意味着创建的线程数量就会越来越多，会造成服务器压力太大，后续优化成线程池处理方式，勉强解决了此问题。</p>
 </li>
 <li><p>应用场景 BIO适用于连接数较少且固定的架构，这种模式对服务器资源要求较高，但程序复杂度比较低；</p>
 </li>
@@ -773,11 +786,11 @@
                      src="/images/loading.svg"
                      data-src="/2023/08/28/BIO-NIO-AIO%E7%9A%84%E5%8C%BA%E5%88%AB/640-1732783216506-5.webp"
                       class="" title="640-1732783216506-5"
-                ></h3><h3 id="NIO的非阻塞到底体现在哪里呢？"><a href="#NIO的非阻塞到底体现在哪里呢？" class="headerlink" title="NIO的非阻塞到底体现在哪里呢？"></a>NIO的非阻塞到底体现在哪里呢？</h3><p>看模型图大家有可能都知道，客户端所有的连接通道都会注册到selector上面，select会通过轮询去获取这些通道的状态，这些状态有accpet(连接请求)、READ读请求。</p>
-<p>如果在轮询过程中发现已经有一个连接请求状态的话，这说明已经有一个客户端想要和服务端进行连接，直接把这个通道传给后端程序去处理连接操作；如果是在BIO模型下的话，会一直阻塞在accept上，直到有连接请求才会释放，继续执行后续的代码。</p>
-<p>如果在轮询过程中发现已经有一个读请求状态的话，这说明已经有一个客户端把数据发送给服务端了，服务端可以直接把通道交给后端程序进行读操作的处理；如果是在BIO模型下的话，会一直阻塞的read上，直到有连接请求才会释放，继续执行后续的代码。</p>
+                ></h3><h3 id="NIO的非阻塞到底体现在哪里呢？"><a href="#NIO的非阻塞到底体现在哪里呢？" class="headerlink" title="NIO的非阻塞到底体现在哪里呢？"></a>NIO的非阻塞到底体现在哪里呢？</h3><p>​		从模型图可以看出，客户端所有的连接通道都会注册到selector上面，select会通过轮询去获取这些通道的状态，这些状态有accpet(连接请求)、READ读请求。</p>
+<p>​		如果在轮询过程中发现已经有一个连接请求状态的话，这说明已经有一个客户端想要和服务端进行连接，直接把这个通道传给后端程序去处理连接操作；如果是在BIO模型下的话，会一直阻塞在accept上，直到有连接请求才会释放，继续执行后续的代码。</p>
+<p>​		如果在轮询过程中发现已经有一个读请求状态的话，这说明已经有一个客户端把数据发送给服务端了，服务端可以直接把通道交给后端程序进行读操作的处理；如果是在BIO模型下的话，会一直阻塞在read上，直到有连接请求才会释放，继续执行后续的代码。</p>
 <p><strong>「以上可以总结为：在NIO模型中，如果服务端执行了read操作的话，就说明已经有可用的数据进行读取了，如果执行了accpet操作的话，就说明此时一定有客户端发起了与服务端的连接，能够保证这种操作的前提是selector轮询到了可读可连接的通道状态。」</strong></p>
-<h3 id="如果selector轮询后，得到了多个通道的read和accpet状态，NIO是如何处理的？"><a href="#如果selector轮询后，得到了多个通道的read和accpet状态，NIO是如何处理的？" class="headerlink" title="如果selector轮询后，得到了多个通道的read和accpet状态，NIO是如何处理的？"></a>如果selector轮询后，得到了多个通道的read和accpet状态，NIO是如何处理的？</h3><ul>
+<h3 id="那如果selector轮询后，得到了多个通道的read和accpet状态，NIO是如何处理的？"><a href="#那如果selector轮询后，得到了多个通道的read和accpet状态，NIO是如何处理的？" class="headerlink" title="那如果selector轮询后，得到了多个通道的read和accpet状态，NIO是如何处理的？"></a>那如果selector轮询后，得到了多个通道的read和accpet状态，NIO是如何处理的？</h3><ul>
 <li>单线程 如果在单线程模式下，处理方式是按照轮询后得到的变化的通道的先后顺序进行处理的，没错，它是同步进行处理的，也就是它只能处理完这个通道的操作，才能继续处理下个通道的请求，在selector代码中，是通过遍历所有有变化的通道进行处理的，后面大家看代码就明白了，这种一个selector对应一个线程的模式其实就是<strong>「redis的单线程IO模型」</strong>。</li>
 <li>多线程 如果是在多线程模式下，selector在遍历每一个通道的时候，都会把对通道的操作交给一个线程去处理，一般都会丢到线程池中去处理，这个时候执行顺序就得看cpu的调度情况来决定了。</li>
 </ul>
@@ -795,9 +808,7 @@
                 >
 
 <ul>
-<li><p>服务端代码说明</p>
-</li>
-<li><ol>
+<li>服务端代码说明<ol>
 <li>创建一个 ServerSocketChannel 和 Selector ，并将 ServerSocketChannel 注册到 Selector 上</li>
 <li>selector 通过 select() 方法监听 channel 事件，当客户端连接时，selector 监听到连接事件， 获取到 ServerSocketChannel 注册时 绑定的 selectionKey</li>
 <li>selectionKey 通过 channel() 方法可以获取绑定的 ServerSocketChannel</li>
@@ -811,7 +822,7 @@
 </ol>
 </li>
 </ul>
-<p>大家有可能注意到我在代码注释中提到的水平触发，我这做下解释：水平触发是多路复用中的一种模式，与此对应的还有一个边缘触发。</p>
+<p>这里注意一下在代码注释中提到的水平触发，我这做下解释：水平触发是多路复用中的一种模式，与此对应的还有一个边缘触发。</p>
 <ul>
 <li>水平触发 如果在通道中检测到数据变化后会触发通知，如果收到通知后，事件处理程序没有完全读取缓冲区中的所有数据或压根就没有读，那么在水平触发模式下，就会一直触发这个通知，直到缓冲区的内容被读取完，NIO中select和poll就属于这种模式</li>
 <li>边缘触发 情况同上，不过是当系统通知一次之后，只有当通道中的数据再次发生改变后，才会再次发生通知。epoll既可以采用水平触发,也可以采用边缘触发</li>
@@ -832,7 +843,7 @@
 </ul>
 <div class="highlight-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 服务端代码</span></span><br><span class="line">    <span class="keyword">package</span> com.example.netty.aio;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.net.InetSocketAddress;</span><br><span class="line"><span class="keyword">import</span> java.nio.ByteBuffer;</span><br><span class="line"><span class="keyword">import</span> java.nio.channels.AsynchronousServerSocketChannel;</span><br><span class="line"><span class="keyword">import</span> java.nio.channels.AsynchronousSocketChannel;</span><br><span class="line"><span class="keyword">import</span> java.nio.channels.CompletionHandler;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AioServer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, InterruptedException &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">AsynchronousServerSocketChannel</span> <span class="variable">serverChannel</span> <span class="operator">=</span></span><br><span class="line">                AsynchronousServerSocketChannel.open().bind(<span class="keyword">new</span> <span class="title class_">InetSocketAddress</span>(<span class="number">9000</span>));</span><br><span class="line">        serverChannel.accept(<span class="literal">null</span>,<span class="keyword">new</span>  <span class="title class_">CompletionHandler</span>&lt;AsynchronousSocketChannel, Object&gt;() &#123;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">completed</span><span class="params">(AsynchronousSocketChannel socketChannel, Object attachment)</span> &#123;</span><br><span class="line">                serverChannel.accept(attachment, <span class="built_in">this</span>);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    System.out.println(socketChannel.getRemoteAddress());</span><br><span class="line">                    <span class="type">ByteBuffer</span> <span class="variable">buffer</span> <span class="operator">=</span> ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">                    socketChannel.read(buffer, buffer, <span class="keyword">new</span> <span class="title class_">CompletionHandler</span>&lt;Integer, ByteBuffer&gt;() &#123;</span><br><span class="line"></span><br><span class="line">                        <span class="meta">@Override</span></span><br><span class="line">                        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">completed</span><span class="params">(Integer result, ByteBuffer attachment)</span> &#123;</span><br><span class="line">                            buffer.flip();</span><br><span class="line">                            System.out.println(<span class="keyword">new</span> <span class="title class_">String</span>(buffer.array(), <span class="number">0</span>, result));</span><br><span class="line">                            socketChannel.write(ByteBuffer.wrap(<span class="string">&quot;HelloAioClient&quot;</span>.getBytes()));</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        <span class="meta">@Override</span></span><br><span class="line">                        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">failed</span><span class="params">(Throwable exc, ByteBuffer attachment)</span> &#123;</span><br><span class="line"></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">failed</span><span class="params">(Throwable exc, Object attachment)</span> &#123;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        Thread.sleep(Integer.MAX_VALUE);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 客户端代码</span></span><br><span class="line"><span class="keyword">package</span> com.example.netty.aio;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.net.InetSocketAddress;</span><br><span class="line"><span class="keyword">import</span> java.nio.ByteBuffer;</span><br><span class="line"><span class="keyword">import</span> java.nio.channels.AsynchronousSocketChannel;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ExecutionException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AioClient</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> ExecutionException, InterruptedException, IOException &#123;</span><br><span class="line">        <span class="type">AsynchronousSocketChannel</span> <span class="variable">socketChannel</span> <span class="operator">=</span> AsynchronousSocketChannel.open();</span><br><span class="line">        socketChannel.connect(<span class="keyword">new</span> <span class="title class_">InetSocketAddress</span>(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">9000</span>)).get();</span><br><span class="line">        socketChannel.write(ByteBuffer.wrap(<span class="string">&quot;HelloServer&quot;</span>.getBytes()));</span><br><span class="line">        <span class="type">ByteBuffer</span> <span class="variable">buffer</span> <span class="operator">=</span> ByteBuffer.allocate(<span class="number">512</span>);</span><br><span class="line">        <span class="type">Integer</span> <span class="variable">len</span> <span class="operator">=</span> socketChannel.read(buffer).get();</span><br><span class="line">        <span class="keyword">if</span> (len!=-<span class="number">1</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;客户端收到信息：&quot;</span> + <span class="keyword">new</span> <span class="title class_">String</span>(buffer.array(), <span class="number">0</span>, len));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div></div></div></div>
 
-<p>「总结：可以看出异步非阻塞模式的代码是非常简单的，所有的操作都是通过回调机制触发的，我们只需要在回调方法中处理我们自己的逻辑就行了，其实AIO是基于NIO进行封装，后面会讲到netty也是基于NIO进行封装的」</p>
+<p>「总结：可以看出异步非阻塞模式的代码是非常简单的，所有的操作都是通过回调机制触发的，我们只需要在回调方法中处理我们自己的逻辑就行了，其实AIO是基于NIO进行封装，后面会讲到的netty也是基于NIO进行封装的」</p>
 <h2 id="BIO、NIO、AIO区别"><a href="#BIO、NIO、AIO区别" class="headerlink" title="BIO、NIO、AIO区别"></a>BIO、NIO、AIO区别</h2><img  
                      lazyload
                      src="/images/loading.svg"
@@ -879,7 +890,7 @@
 		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
 			
 			<li class="tag-item mx-0.5">
-				<a href="/tags/Java/">#Java</a>&nbsp;
+				<a href="/tags/Netty/">#Netty</a>&nbsp;
 			</li>
 			
 		</ul>
@@ -959,7 +970,7 @@
 	<div class="post-toc">
 		<div class="toc-title">目录</div>
 		<div class="page-title">BIO|NIO|AIO的区别</div>
-		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5-%E5%BC%82%E6%AD%A5-%E9%98%BB%E5%A1%9E-%E9%9D%9E%E9%98%BB%E5%A1%9E-%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%9F"><span class="nav-text">同步&#x2F;异步&#x2F;阻塞&#x2F;非阻塞 到底是什么意思？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NIO%E6%9C%89%E4%B8%89%E5%A4%A7%E7%BB%84%E4%BB%B6%EF%BC%9AChannel-%E9%80%9A%E9%81%93-%E3%80%81Buffer%EF%BC%88%E7%BC%93%E5%AD%98%E5%8C%BA%EF%BC%89%E3%80%81Selector-%E9%80%89%E6%8B%A9%E5%99%A8"><span class="nav-text">NIO有三大组件：Channel(通道)、Buffer（缓存区）、Selector(选择器)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A5%E4%B8%8B%E6%98%AFNIO%E7%BB%93%E6%9E%84%E6%A8%A1%E5%9E%8B"><span class="nav-text">以下是NIO结构模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lanmu1-2"><span class="nav-text"></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NIO%E7%9A%84%E9%9D%9E%E9%98%BB%E5%A1%9E%E5%88%B0%E5%BA%95%E4%BD%93%E7%8E%B0%E5%9C%A8%E5%93%AA%E9%87%8C%E5%91%A2%EF%BC%9F"><span class="nav-text">NIO的非阻塞到底体现在哪里呢？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E6%9E%9Cselector%E8%BD%AE%E8%AF%A2%E5%90%8E%EF%BC%8C%E5%BE%97%E5%88%B0%E4%BA%86%E5%A4%9A%E4%B8%AA%E9%80%9A%E9%81%93%E7%9A%84read%E5%92%8Caccpet%E7%8A%B6%E6%80%81%EF%BC%8CNIO%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E7%9A%84%EF%BC%9F"><span class="nav-text">如果selector轮询后，得到了多个通道的read和accpet状态，NIO是如何处理的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E5%B8%B8%E8%A7%81%E7%9A%84%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0api"><span class="nav-text">多路复用常见的底层实现api</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIO%E3%80%81NIO%E3%80%81AIO%E5%8C%BA%E5%88%AB"><span class="nav-text">BIO、NIO、AIO区别</span></a></li></ol>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5-%E5%BC%82%E6%AD%A5-%E9%98%BB%E5%A1%9E-%E9%9D%9E%E9%98%BB%E5%A1%9E-%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%9F"><span class="nav-text">同步&#x2F;异步&#x2F;阻塞&#x2F;非阻塞 到底是什么意思？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NIO%E6%9C%89%E4%B8%89%E5%A4%A7%E7%BB%84%E4%BB%B6%EF%BC%9AChannel-%E9%80%9A%E9%81%93-%E3%80%81Buffer%EF%BC%88%E7%BC%93%E5%AD%98%E5%8C%BA%EF%BC%89%E3%80%81Selector-%E9%80%89%E6%8B%A9%E5%99%A8"><span class="nav-text">NIO有三大组件：Channel(通道)、Buffer（缓存区）、Selector(选择器)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A5%E4%B8%8B%E6%98%AFNIO%E7%BB%93%E6%9E%84%E6%A8%A1%E5%9E%8B"><span class="nav-text">以下是NIO结构模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lanmu1-2"><span class="nav-text"></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NIO%E7%9A%84%E9%9D%9E%E9%98%BB%E5%A1%9E%E5%88%B0%E5%BA%95%E4%BD%93%E7%8E%B0%E5%9C%A8%E5%93%AA%E9%87%8C%E5%91%A2%EF%BC%9F"><span class="nav-text">NIO的非阻塞到底体现在哪里呢？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%A3%E5%A6%82%E6%9E%9Cselector%E8%BD%AE%E8%AF%A2%E5%90%8E%EF%BC%8C%E5%BE%97%E5%88%B0%E4%BA%86%E5%A4%9A%E4%B8%AA%E9%80%9A%E9%81%93%E7%9A%84read%E5%92%8Caccpet%E7%8A%B6%E6%80%81%EF%BC%8CNIO%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E7%9A%84%EF%BC%9F"><span class="nav-text">那如果selector轮询后，得到了多个通道的read和accpet状态，NIO是如何处理的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E5%B8%B8%E8%A7%81%E7%9A%84%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0api"><span class="nav-text">多路复用常见的底层实现api</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIO%E3%80%81NIO%E3%80%81AIO%E5%8C%BA%E5%88%AB"><span class="nav-text">BIO、NIO、AIO区别</span></a></li></ol>
 
 	</div>
 </div>
