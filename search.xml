@@ -228,6 +228,480 @@
       </tags>
   </entry>
   <entry>
+    <title>STM32(一)介绍</title>
+    <url>/2023/09/23/STM32(%E4%B8%80)%E4%BB%8B%E7%BB%8D/</url>
+    <content><![CDATA[<h1 id="STM32介绍"><a href="#STM32介绍" class="headerlink" title="STM32介绍"></a>STM32介绍</h1><ul>
+<li>STM32是ST公司基于ARM Cortex-M内核开发的32位微控制器</li>
+<li>STM32常应用在嵌入式领域，如智能车、无人机、机器人、无线通信、物联网、工业控制、娱乐电子产品等</li>
+<li>STM32功能强大、性能优异、片上资源丰富、功耗低，是一款经典的嵌入式微控制器</li>
+</ul>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%B8%80)%E4%BB%8B%E7%BB%8D/image-20250219155220550.png"
+                      alt="image-20250219155220550"
+                ></p>
+<h1 id="ARM"><a href="#ARM" class="headerlink" title="ARM"></a>ARM</h1><ul>
+<li>ARM既指ARM公司，也指ARM处理器内核</li>
+<li>ARM公司是全球领先的半导体知识产权（IP）提供商，全世界超过95%的智能手机和平板电脑都采用ARM架构</li>
+<li>ARM公司设计ARM内核，半导体厂商完善内核周边电路并生产芯片</li>
+</ul>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%B8%80)%E4%BB%8B%E7%BB%8D/image-20250219155416036.png"
+                      alt="image-20250219155416036"
+                ></p>
+<h1 id="STM32F103C8T6"><a href="#STM32F103C8T6" class="headerlink" title="STM32F103C8T6"></a>STM32F103C8T6</h1><ul>
+<li>系列：主流系列STM32F1</li>
+<li>内核：ARM Cortex-M3</li>
+<li>主频：72MHz</li>
+<li>RAM：20K（SRAM）</li>
+<li>ROM：64K（Flash）</li>
+<li>供电：2.0~3.6V（标准3.3V）</li>
+<li>封装：LQFP48</li>
+</ul>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%B8%80)%E4%BB%8B%E7%BB%8D/image-20250219161707997.png"
+                      alt="image-20250219161707997"
+                ></p>
+<h2 id="片上资源-外设"><a href="#片上资源-外设" class="headerlink" title="片上资源&#x2F;外设"></a>片上资源&#x2F;外设</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%B8%80)%E4%BB%8B%E7%BB%8D/image-20250219161745905.png"
+                      alt="image-20250219161745905"
+                ></p>
+<h2 id="命名规则"><a href="#命名规则" class="headerlink" title="命名规则"></a>命名规则</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%B8%80)%E4%BB%8B%E7%BB%8D/image-20250219161805093.png"
+                      alt="image-20250219161805093"
+                ></p>
+<h2 id="系统结构"><a href="#系统结构" class="headerlink" title="系统结构"></a>系统结构</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%B8%80)%E4%BB%8B%E7%BB%8D/image-20250219161820738.png"
+                      alt="image-20250219161820738"
+                ></p>
+<h2 id="引脚定义"><a href="#引脚定义" class="headerlink" title="引脚定义"></a>引脚定义</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%B8%80)%E4%BB%8B%E7%BB%8D/image-20250219161934607.png"
+                      alt="image-20250219161934607"
+                ></p>
+<h2 id="启动配置"><a href="#启动配置" class="headerlink" title="启动配置"></a>启动配置</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%B8%80)%E4%BB%8B%E7%BB%8D/image-20250219162016931.png"
+                      alt="image-20250219162016931"
+                ></p>
+<h2 id="最小系统电路"><a href="#最小系统电路" class="headerlink" title="最小系统电路"></a>最小系统电路</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%B8%80)%E4%BB%8B%E7%BB%8D/image-20250219162038399.png"
+                      alt="image-20250219162038399"
+                ></p>
+<h1 id="术语介绍"><a href="#术语介绍" class="headerlink" title="术语介绍"></a>术语介绍</h1><h2 id="使能"><a href="#使能" class="headerlink" title="使能"></a>使能</h2><p><strong>使能</strong>（Enable）在嵌入式系统和电子工程中是一个常见的术语，意思是<strong>激活某个功能或模块</strong>，使其进入工作状态。在STM32微控制器中，使能通常指的是通过配置寄存器或调用库函数来激活某个外设或功能。</p>
+<hr>
+<h3 id="1-使能的具体含义"><a href="#1-使能的具体含义" class="headerlink" title="1. 使能的具体含义"></a>1. <strong>使能的具体含义</strong></h3><ul>
+<li><strong>使能某个外设</strong>：激活该外设的时钟信号，使其可以正常工作。</li>
+<li><strong>使能某个功能</strong>：激活某个特定的功能模块，例如中断、DMA传输等。</li>
+</ul>
+<hr>
+<h3 id="2-为什么需要使能？"><a href="#2-为什么需要使能？" class="headerlink" title="2. 为什么需要使能？"></a>2. <strong>为什么需要使能？</strong></h3><p>在STM32中，许多外设和功能模块默认是关闭的（为了节省功耗），因此在使用之前需要手动使能。例如：</p>
+<ul>
+<li><strong>外设时钟</strong>：每个外设（如GPIO、USART、SPI等）都需要时钟信号才能工作。默认情况下，外设的时钟是关闭的，必须通过配置RCC（复位和时钟控制）寄存器来使能。</li>
+<li><strong>中断</strong>：中断功能默认是关闭的，需要使能后才能响应外部事件。</li>
+<li><strong>DMA</strong>：DMA传输功能默认是关闭的，需要使能后才能使用。</li>
+</ul>
+<h2 id="时钟"><a href="#时钟" class="headerlink" title="时钟"></a>时钟</h2><p>STM32的所有外设（包括GPIO、USART、SPI等）都需要<strong>时钟信号</strong>才能正常工作，<strong>时钟信号是外设运行的基础</strong>。</p>
+<h3 id="1-为什么需要时钟？"><a href="#1-为什么需要时钟？" class="headerlink" title="1. 为什么需要时钟？"></a>1. <strong>为什么需要时钟？</strong></h3><ul>
+<li>时钟信号是微控制器内部和外设运行的“心跳”，它决定了<strong>外设的工作频率</strong>。（<strong>时钟信号</strong> 是数字电路中的一种周期性信号，用于同步各部件操作，确保数据在正确时间传输和处理。）</li>
+<li><strong>每个外设</strong>（包括GPIOC）<strong>都需要</strong>时钟信号来<strong>驱动</strong>其<strong>内部逻辑电路</strong>。</li>
+<li><strong>默认情况下，STM32的外设时钟是关闭的（为了节能）</strong>，因此在<strong>使用某个外设（如GPIOC）之前</strong>，必须<strong>使能</strong>其时钟。</li>
+</ul>
+<hr>
+<h3 id="2-GPIOC时钟的来源"><a href="#2-GPIOC时钟的来源" class="headerlink" title="2. GPIOC时钟的来源"></a>2. <strong>GPIOC时钟的来源</strong></h3><p>在STM32中，GPIOC的时钟来源于<strong>AHB总线</strong>（高级高性能总线），通过<strong>APB2外设时钟使能寄存器（RCC_APB2ENR）</strong>控制。</p>
+<ul>
+<li><strong>AHB总线</strong>：高速总线，为许多外设提供时钟。</li>
+<li><strong>APB2总线</strong>：AHB总线的子集，负责为高速外设（如GPIO、USART1、SPI1等）提供时钟。</li>
+</ul>
+<hr>
+<h3 id="3-如何使能GPIOC的时钟？"><a href="#3-如何使能GPIOC的时钟？" class="headerlink" title="3. 如何使能GPIOC的时钟？"></a>3. <strong>如何使能GPIOC的时钟？</strong></h3><p>在STM32的标准外设库（Standard Peripheral Library）或HAL库中，可以通过以下代码使能GPIOC的时钟：</p>
+<h4 id="使用标准外设库"><a href="#使用标准外设库" class="headerlink" title="使用标准外设库"></a>使用标准外设库</h4><div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;stm32f10x.h&quot;</span>  <span class="comment">// 根据具体的STM32型号包含对应的头文件</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    <span class="comment">// 使能GPIOC的时钟</span></span><br><span class="line">    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 其他代码</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">// 主循环</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="使用HAL库"><a href="#使用HAL库" class="headerlink" title="使用HAL库"></a>使用HAL库</h4><div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;stm32f1xx_hal.h&quot;</span>  <span class="comment">// 根据具体的STM32型号包含对应的头文件</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    HAL_Init();  <span class="comment">// 初始化HAL库</span></span><br><span class="line">    SystemClock_Config();  <span class="comment">// 配置系统时钟</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使能GPIOC的时钟</span></span><br><span class="line">    __HAL_RCC_GPIOC_CLK_ENABLE();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 其他代码</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">// 主循环</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<hr>
+<h3 id="4-时钟使能的底层原理"><a href="#4-时钟使能的底层原理" class="headerlink" title="4. 时钟使能的底层原理"></a>4. <strong>时钟使能的底层原理</strong></h3><p>在STM32中，时钟使能是通过配置<strong>RCC（复位和时钟控制）寄存器</strong>实现的。对于GPIOC，具体的寄存器是<code>RCC_APB2ENR</code>。</p>
+<ul>
+<li><strong>RCC_APB2ENR寄存器</strong>：控制APB2总线上外设的时钟使能。</li>
+<li><strong>GPIOC的时钟使能位</strong>：在<code>RCC_APB2ENR</code>寄存器中，GPIOC的时钟使能位是第4位（<code>IOPCEN</code>）。</li>
+</ul>
+<p>例如，使能GPIOC时钟的底层操作如下：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line">RCC-&gt;APB2ENR |= RCC_APB2ENR_IOPCEN;</span><br></pre></td></tr></table></figure></div>
+
+<hr>
+<h3 id="5-时钟使能的重要性"><a href="#5-时钟使能的重要性" class="headerlink" title="5. 时钟使能的重要性"></a>5. <strong>时钟使能的重要性</strong></h3><ul>
+<li><strong>如果没有使能GPIOC的时钟，GPIOC的所有操作（如设置引脚模式、读写引脚状态等）都将无效。</strong></li>
+<li>使能时钟后，GPIOC的寄存器才能被正确访问和配置。</li>
+</ul>
+<hr>
+<h3 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. <strong>总结</strong></h3><ul>
+<li><strong>GPIOC的时钟</strong>是为GPIOC外设提供工作频率的信号。</li>
+<li>在使用GPIOC之前，必须通过RCC寄存器或库函数使能其时钟。</li>
+<li>时钟使能是STM32外设配置的第一步，是外设正常工作的前提。</li>
+</ul>
+<p>如果你使用的是具体的STM32型号（如STM32F1、STM32F4等），可以参考对应型号的参考手册（Reference Manual）和数据手册（Datasheet），了解更详细的时钟树结构和寄存器配置。</p>
+<h2 id="外设"><a href="#外设" class="headerlink" title="外设"></a>外设</h2><p>在STM32微控制器中，<strong>外设</strong>（Peripheral）是指<strong>集成在芯片内部</strong>、<strong>用于实现特定功能的硬件模块</strong>。</p>
+<p>STM32微控制器不仅仅是一个CPU，它还集成了许多外设，用于处理各种任务。如GPIO（通用输入输出）、USART（串口通信）、SPI（串行外设接口）、I2C（集成电路总线）、定时器、ADC（模数转换器）等。</p>
+<hr>
+<h3 id="1-外设的作用"><a href="#1-外设的作用" class="headerlink" title="1. 外设的作用"></a>1. <strong>外设的作用</strong></h3><p>外设是STM32与外部世界交互的桥梁。它们可以：</p>
+<ul>
+<li>控制硬件（如点亮LED、驱动电机）。</li>
+<li>采集数据（如读取传感器信号）。</li>
+<li>通信（如通过串口、SPI、I2C与其他设备通信）。</li>
+<li>计时和计数（如定时器、PWM输出）。</li>
+</ul>
+<hr>
+<h3 id="2-常见的外设"><a href="#2-常见的外设" class="headerlink" title="2. 常见的外设"></a>2. <strong>常见的外设</strong></h3><p>以下是一些STM32中常见的外设：</p>
+<h4 id="1-GPIO（通用输入输出）"><a href="#1-GPIO（通用输入输出）" class="headerlink" title="(1) GPIO（通用输入输出）"></a>(1) <strong>GPIO（通用输入输出）</strong></h4><ul>
+<li>用于控制引脚的电平（高电平或低电平）。</li>
+<li>可以配置为输入模式（读取外部信号）或输出模式（驱动外部设备）。</li>
+<li>例如：点亮LED、读取按键状态。</li>
+</ul>
+<h4 id="2-USART-UART（串口通信）"><a href="#2-USART-UART（串口通信）" class="headerlink" title="(2) USART&#x2F;UART（串口通信）"></a>(2) <strong>USART&#x2F;UART（串口通信）</strong></h4><ul>
+<li>用于串行通信，支持异步传输。</li>
+<li>常用于与PC、传感器、蓝牙模块等设备通信。</li>
+</ul>
+<h4 id="3-SPI（串行外设接口）"><a href="#3-SPI（串行外设接口）" class="headerlink" title="(3) SPI（串行外设接口）"></a>(3) <strong>SPI（串行外设接口）</strong></h4><ul>
+<li>高速全双工通信接口。</li>
+<li>常用于与Flash存储器、显示屏、传感器等设备通信。</li>
+</ul>
+<h4 id="4-I2C（集成电路总线）"><a href="#4-I2C（集成电路总线）" class="headerlink" title="(4) I2C（集成电路总线）"></a>(4) <strong>I2C（集成电路总线）</strong></h4><ul>
+<li>双线制通信接口，支持多设备连接。</li>
+<li>常用于与EEPROM、温度传感器等设备通信。</li>
+</ul>
+<h4 id="5-定时器（TIM）"><a href="#5-定时器（TIM）" class="headerlink" title="(5) 定时器（TIM）"></a>(5) <strong>定时器（TIM）</strong></h4><ul>
+<li>用于计时、生成PWM信号、捕获输入信号等。</li>
+<li>例如：控制电机的转速、测量脉冲宽度。</li>
+</ul>
+<h4 id="6-ADC（模数转换器）"><a href="#6-ADC（模数转换器）" class="headerlink" title="(6) ADC（模数转换器）"></a>(6) <strong>ADC（模数转换器）</strong></h4><ul>
+<li>将模拟信号（如电压）转换为数字信号。</li>
+<li>例如：读取电位器的电压、采集传感器数据。</li>
+</ul>
+<h4 id="7-DAC（数模转换器）"><a href="#7-DAC（数模转换器）" class="headerlink" title="(7) DAC（数模转换器）"></a>(7) <strong>DAC（数模转换器）</strong></h4><ul>
+<li>将数字信号转换为模拟信号。</li>
+<li>例如：生成音频信号、控制模拟电压输出。</li>
+</ul>
+<h4 id="8-DMA（直接存储器访问）"><a href="#8-DMA（直接存储器访问）" class="headerlink" title="(8) DMA（直接存储器访问）"></a>(8) <strong>DMA（直接存储器访问）</strong></h4><ul>
+<li>用于在内存和外设之间直接传输数据，无需CPU干预。</li>
+<li>例如：高速数据传输、减少CPU负载。</li>
+</ul>
+<h4 id="9-CAN（控制器局域网）"><a href="#9-CAN（控制器局域网）" class="headerlink" title="(9) CAN（控制器局域网）"></a>(9) <strong>CAN（控制器局域网）</strong></h4><ul>
+<li>用于工业通信，支持多设备组网。</li>
+<li>例如：汽车电子、工业控制。</li>
+</ul>
+<h4 id="10-USB（通用串行总线）"><a href="#10-USB（通用串行总线）" class="headerlink" title="(10) USB（通用串行总线）"></a>(10) <strong>USB（通用串行总线）</strong></h4><ul>
+<li>用于与PC或其他USB设备通信。</li>
+<li>例如：USB键盘、USB存储设备。</li>
+</ul>
+<hr>
+<h3 id="3-外设与CPU的关系"><a href="#3-外设与CPU的关系" class="headerlink" title="3. 外设与CPU的关系"></a>3. <strong>外设与CPU的关系</strong></h3><ul>
+<li><strong>CPU</strong>：负责执行程序代码，控制外设的运行。</li>
+<li><strong>外设</strong>：负责具体的硬件操作，减轻CPU的负担。</li>
+<li><strong>总线</strong>：CPU通过总线（如AHB、APB）与外设通信，访问外设的寄存器。</li>
+</ul>
+<hr>
+<h3 id="4-外设的时钟"><a href="#4-外设的时钟" class="headerlink" title="4. 外设的时钟"></a>4. <strong>外设的时钟</strong></h3><p>每个外设都需要时钟信号才能工作。STM32的时钟系统非常复杂，外设的时钟来源可以是：</p>
+<ul>
+<li><strong>系统时钟（SYSCLK）</strong>：主时钟源，通常由外部晶振或内部振荡器提供。</li>
+<li><strong>AHB总线时钟</strong>：高速总线时钟，为许多外设提供时钟。</li>
+<li><strong>APB1&#x2F;APB2总线时钟</strong>：低速总线时钟，为特定外设提供时钟。</li>
+</ul>
+<p>在使用某个外设之前，必须使能其时钟。例如：</p>
+<ul>
+<li>使用GPIO时，需要使能GPIO的时钟。</li>
+<li>使用USART时，需要使能USART的时钟。</li>
+</ul>
+<hr>
+<h3 id="5-外设的寄存器"><a href="#5-外设的寄存器" class="headerlink" title="5. 外设的寄存器"></a>5. <strong>外设的寄存器</strong></h3><p>每个外设都有一组寄存器，用于配置和控制其行为。例如：</p>
+<ul>
+<li><strong>GPIO的寄存器</strong>：配置引脚模式、读取引脚状态。</li>
+<li><strong>USART的寄存器</strong>：设置波特率、发送和接收数据。</li>
+<li><strong>定时器的寄存器</strong>：设置计数值、启动或停止定时器。</li>
+</ul>
+<p>通过读写这些寄存器，可以控制外设的工作方式。</p>
+<hr>
+<h3 id="6-总结-1"><a href="#6-总结-1" class="headerlink" title="6. 总结"></a>6. <strong>总结</strong></h3><ul>
+<li><strong>外设</strong>是STM32微控制器内部的硬件模块，用于实现特定功能。</li>
+<li>外设通过与CPU协作，完成各种任务（如通信、数据采集、控制硬件等）。</li>
+<li>每个外设都需要时钟信号才能工作，且需要通过寄存器进行配置。</li>
+</ul>
+<h2 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h2><p><strong>寄存器</strong>（Register）是计算机和微控制器中一种非常重要的硬件组件，<strong>用于存储和操作数据</strong>。在STM32微控制器中，寄存器是CPU与外设之间交互的桥梁，通过读写寄存器可以配置外设的行为、获取外设的状态或传输数据。</p>
+<h3 id="1-寄存器的基本概念"><a href="#1-寄存器的基本概念" class="headerlink" title="1. 寄存器的基本概念"></a>1. <strong>寄存器的基本概念</strong></h3><ul>
+<li><strong>寄存器</strong>是一种高速的存储单元，位于CPU或外设内部。</li>
+<li>每个寄存器通常由多个<strong>位（bit）</strong>组成，每个位可以存储一个二进制值（0或1）。</li>
+<li>寄存器的位数取决于具体的硬件设计，例如STM32中的寄存器通常是32位的。</li>
+</ul>
+<hr>
+<h3 id="2-寄存器的作用"><a href="#2-寄存器的作用" class="headerlink" title="2. 寄存器的作用"></a>2. <strong>寄存器的作用</strong></h3><p>在STM32中，寄存器的主要作用包括：</p>
+<ul>
+<li><strong>配置外设</strong>：通过写寄存器设置外设的工作模式、参数等。</li>
+<li><strong>控制外设</strong>：通过写寄存器启动或停止外设的工作。</li>
+<li><strong>获取状态</strong>：通过读寄存器获取外设的当前状态。</li>
+<li><strong>传输数据</strong>：通过寄存器在CPU和外设之间传输数据。</li>
+</ul>
+<hr>
+<h3 id="3-寄存器的分类"><a href="#3-寄存器的分类" class="headerlink" title="3. 寄存器的分类"></a>3. <strong>寄存器的分类</strong></h3><p>在STM32中，寄存器可以分为以下几类：</p>
+<h4 id="1-CPU寄存器"><a href="#1-CPU寄存器" class="headerlink" title="(1) CPU寄存器"></a>(1) <strong>CPU寄存器</strong></h4><ul>
+<li>位于CPU内部，用于执行指令和临时存储数据。</li>
+<li>例如：程序计数器（PC）、堆栈指针（SP）、通用寄存器（R0-R12）等。</li>
+</ul>
+<h4 id="2-外设寄存器"><a href="#2-外设寄存器" class="headerlink" title="(2) 外设寄存器"></a>(2) <strong>外设寄存器</strong></h4><ul>
+<li>位于外设内部，用于配置和控制外设的行为。</li>
+<li>例如：<ul>
+<li><strong>GPIO寄存器</strong>：配置引脚模式、读写引脚状态。</li>
+<li><strong>USART寄存器</strong>：设置波特率、发送和接收数据。</li>
+<li><strong>定时器寄存器</strong>：设置计数值、启动或停止定时器。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-特殊功能寄存器"><a href="#3-特殊功能寄存器" class="headerlink" title="(3) 特殊功能寄存器"></a>(3) <strong>特殊功能寄存器</strong></h4><ul>
+<li>用于控制系统级别的功能。</li>
+<li>例如：<ul>
+<li><strong>RCC寄存器</strong>：配置系统时钟和外设时钟。</li>
+<li><strong>NVIC寄存器</strong>：配置中断优先级和使能中断。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="4-寄存器的访问"><a href="#4-寄存器的访问" class="headerlink" title="4. 寄存器的访问"></a>4. <strong>寄存器的访问</strong></h3><p>在STM32中，寄存器是通过内存映射的方式访问的。每个寄存器都有一个唯一的地址，可以通过指针或库函数来读写寄存器。</p>
+<h4 id="1-直接访问寄存器"><a href="#1-直接访问寄存器" class="headerlink" title="(1) 直接访问寄存器"></a>(1) <strong>直接访问寄存器</strong></h4><p>通过指针访问寄存器的地址。例如：</p>
+<ul>
+<li><p>读取GPIOC的输入数据寄存器：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">uint32_t input_data = GPIOC-&gt;IDR;</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>设置GPIOC的引脚为高电平：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">GPIOC-&gt;ODR |= (1 &lt;&lt; 5);  // 设置第5位为1</span><br></pre></td></tr></table></figure></div></li>
+</ul>
+<h4 id="2-使用库函数访问寄存器"><a href="#2-使用库函数访问寄存器" class="headerlink" title="(2) 使用库函数访问寄存器"></a>(2) <strong>使用库函数访问寄存器</strong></h4><p>STM32提供了标准外设库和HAL库，封装了寄存器的操作。例如：</p>
+<ul>
+<li><p>使用标准外设库设置GPIO引脚：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">GPIO_SetBits(GPIOC, GPIO_Pin_5);  // 设置GPIOC的第5引脚为高电平</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>使用HAL库配置USART：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">HAL_USART_Init(&amp;husart1);</span><br></pre></td></tr></table></figure></div></li>
+</ul>
+<h3 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. <strong>总结</strong></h3><ul>
+<li><strong>寄存器</strong>是微控制器中用于存储和操作数据的硬件单元。</li>
+<li>通过读写寄存器，可以配置外设、控制外设、获取状态和传输数据。</li>
+<li>寄存器通常通过内存映射的方式访问，每个寄存器都有唯一的地址。</li>
+<li>在STM32中，寄存器是开发的基础，理解寄存器的使用是掌握STM32编程的关键。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>嵌入式</category>
+      </categories>
+      <tags>
+        <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>STM32(二)GPIO</title>
+    <url>/2023/09/24/STM32(%E4%BA%8C)GPIO/</url>
+    <content><![CDATA[<h1 id="GPIO介绍"><a href="#GPIO介绍" class="headerlink" title="GPIO介绍"></a>GPIO介绍</h1><p><strong>GPIO（General Purpose Input Output）通用输入输出口</strong></p>
+<ul>
+<li>可配置为8种输入输出模式</li>
+<li>引脚电平：0V~3.3V，部分引脚可容忍5V</li>
+<li>输出模式下可控制端口输出高低电平，用以驱动LED、控制蜂鸣器、模拟通信协议输出时序等</li>
+<li>输入模式下可读取端口的高低电平或电压，用于读取按键输入、外接模块电平信号输入、ADC电压采集、模拟通信协议接收数据等</li>
+</ul>
+<h1 id="GPIO基本结构"><a href="#GPIO基本结构" class="headerlink" title="GPIO基本结构"></a>GPIO基本结构</h1><p>寄存器上一节有讲过，用于<strong>存储和操作数据</strong></p>
+<p>驱动器是用来<strong>增加信号的驱动能力</strong>的，如果要进行点灯这样的操作，就需要驱动器来负责增大驱动能力</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220004237221.png"
+                      alt="image-20250220004237221"
+                ></p>
+<h1 id="GPIO位结构"><a href="#GPIO位结构" class="headerlink" title="GPIO位结构"></a>GPIO位结构</h1><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220010948159.png"
+                      alt="image-20250220010948159"
+                ></p>
+<h2 id="Vdd和Vss"><a href="#Vdd和Vss" class="headerlink" title="Vdd和Vss"></a>Vdd和Vss</h2><p>在STM32微控制器中，Vdd 和 Vss 是芯片的电源引脚，用于为芯片供电。例如：</p>
+<ul>
+<li><strong>Vdd</strong>：连接到 3.3V 电源。</li>
+<li><strong>Vss</strong>：连接到地，0V（GND）</li>
+</ul>
+<h2 id="保护二极管"><a href="#保护二极管" class="headerlink" title="保护二极管"></a>保护二极管</h2><p>保护二极管：<strong>保护内部电路</strong>。当输入电压在0~3.3V之间，两个保护二极管均不会导通，这时二极管对电路没有影响</p>
+<p><strong>大于3.3V</strong>，上方的保护二极管会被导通，电流会从I&#x2F;O引脚流向Vdd</p>
+<p><strong>小于0V</strong>（负电压），下方的保护二极管会被导通，电流会从Vss流向I&#x2F;O引脚（电流会从<strong>高电压流向低电压</strong>，即从0–&gt;-5）</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220011914846.png"
+                      alt="image-20250220011914846"
+                ></p>
+<h2 id="上拉-下拉输入模式"><a href="#上拉-下拉输入模式" class="headerlink" title="上拉&#x2F;下拉输入模式"></a>上拉&#x2F;下拉输入模式</h2><blockquote>
+<p><strong>上面导通</strong>，下面断开，就是<strong>上拉输入模式</strong></p>
+<p><strong>下面导通</strong>，上面断开，就是<strong>下拉输入模式</strong></p>
+<p>两个<strong>都断开</strong>，就是<strong>浮空输入模式</strong></p>
+</blockquote>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220012523523.png"
+                      alt="image-20250220012523523"
+                ></p>
+<h3 id="上拉和下拉的作用"><a href="#上拉和下拉的作用" class="headerlink" title="上拉和下拉的作用"></a>上拉和下拉的作用</h3><p><strong>作用</strong>：为了给输入提供一个默认的输入电平的</p>
+<p>因为对应一个数字的端口，输入不是高电平就是低电平</p>
+<p>那如果输入引脚啥都不接，到底是算高电平还是还是低电平呢？</p>
+<blockquote>
+<p>这就不好说了，对于实际情况，如果输入什么都不接，这时输入就会处于一种<strong>浮空状态</strong>（即不稳定的状态）</p>
+<p>这时引脚的输入电平就极易受外界干扰而改变，受到一点扰动就会变化</p>
+<p><strong>为了避免引脚悬空（浮空）导致的输入数据不确定</strong>，<strong>我们就需要在这里加上 上拉或者下拉电阻</strong></p>
+<ul>
+<li><p>如果接入上拉电阻，当引脚悬空时，还有上拉电阻来保证引脚的高电平，</p>
+<p>所以上拉输入可以默认为高电平的输入模式</p>
+</li>
+<li><p>如果接入下拉电阻，当引脚悬空时，还有下拉电阻来保证引脚的低电平，</p>
+<p>所以下拉输入可以默认为低电平的输入模式</p>
+</li>
+</ul>
+</blockquote>
+<p><strong>注意：</strong>这个上拉电阻和下拉电阻的阻值都是比较大的，是一种弱上拉和弱下拉，<strong>目的是尽量不影响正常的输入操作</strong></p>
+<h2 id="施密特触发器"><a href="#施密特触发器" class="headerlink" title="施密特触发器"></a>施密特触发器</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220145720533.png"
+                      alt="image-20250220145720533"
+                ></p>
+<p>*<strong>这里应该是施密特触发器，只是画错了</strong></p>
+<p>作用：对输入电压进行整形</p>
+<p>执行逻辑：如果输入电压<strong>大于</strong>某一阈值，输出就会瞬间升为高电平</p>
+<p>​				   如果输入电压<strong>小于</strong>某一阈值，输出就会瞬间升为低电平</p>
+<p>举例：因为这个引脚的波形是外界输入的，虽然是数字信号，实际情况下可能会产生各种失真</p>
+<blockquote>
+<p>这里用了两个<strong>比较阈值</strong>（绿线）来进行判断，中间留有一定的变化范围，这样可以有效避免因信号波动造成的输出抖动现象，经过施密特触发器整形的波形就可以直接写入<strong>输入数据寄存器</strong>了</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220155155148.png"
+                      alt="image-20250220155155148"
+                ></p>
+</blockquote>
+<h2 id="输入数据寄存器"><a href="#输入数据寄存器" class="headerlink" title="输入数据寄存器"></a>输入数据寄存器</h2><p>通过程序就能读取输入数据寄存器中的某一位数据，就可以知道端口的输入电平了</p>
+<h2 id="片上外设"><a href="#片上外设" class="headerlink" title="片上外设"></a>片上外设</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220161732886.png"
+                      alt="image-20250220161732886"
+                ></p>
+<ul>
+<li><strong>模拟输入</strong> 连接到ADC上的，因为ADC需要<strong>接收模拟量</strong>，所以这根线是<strong>接到施密特触发器前</strong></li>
+<li><strong>复用功能输入</strong> 这个是连接到其他需要读取端口的外设上的 ，比如串口的输入引脚等，这根线接收的是<strong>数字量</strong>，所以这根线是<strong>接到施密特触发器后</strong></li>
+</ul>
+<h2 id="位设置-位清除寄存器"><a href="#位设置-位清除寄存器" class="headerlink" title="位设置&#x2F;位清除寄存器"></a>位设置&#x2F;位清除寄存器</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220162910089.png"
+                      alt="image-20250220162910089"
+                ></p>
+<p>位置1：</p>
+<p>如果我们要对某一位进行置1的操作，在<strong>位设置寄存器</strong>的对应位写1即可，剩下不需要操作的位写0。</p>
+<p>这样它内部就会有电路，自动将输出数据奇存器中对应位置为1，而剩下写0的位则保持不变。</p>
+<p>这样就保证了只操作其中某一位而不影响其它位，并且这是一步到位的操作</p>
+<p>清0：</p>
+<p>如果想对某一位进行清0的操作，就在<strong>位清除寄存器</strong>的对应位写1即可，这样内部电路就会把这一位清0了</p>
+<h2 id="MOS管"><a href="#MOS管" class="headerlink" title="MOS管"></a>MOS管</h2><p>MOS管就是一种电子开关</p>
+<p>我们的信号来控制开关的导通和关闭，开关负责将IO口接到VDD或者VSS</p>
+<p>在这里可以选择<strong>推挽、开漏或关闭</strong>三种输出方式</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220163202677.png"
+                      alt="image-20250220163202677"
+                ></p>
+<h1 id="GPIO的八种工作模式"><a href="#GPIO的八种工作模式" class="headerlink" title="GPIO的八种工作模式"></a>GPIO的八种工作模式</h1><p>通过配置GPIO的端口配置寄存器 ，端口可以配置成以下8种模式</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220171704985.png"
+                      alt="image-20250220171704985"
+                ></p>
+<h2 id="浮空-上拉-下拉输入"><a href="#浮空-上拉-下拉输入" class="headerlink" title="浮空&#x2F;上拉&#x2F;下拉输入"></a>浮空&#x2F;上拉&#x2F;下拉输入</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220173316357.png"
+                      alt="image-20250220173316357"
+                ></p>
+<h2 id="模拟输入"><a href="#模拟输入" class="headerlink" title="模拟输入"></a>模拟输入</h2><p>当我们使用ADC的时候，将引脚配置为模拟输入就行了，其他时候，一般用不到模拟输入</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220173337171.png"
+                      alt="image-20250220173337171"
+                ></p>
+<h2 id="开漏输出和推挽输出"><a href="#开漏输出和推挽输出" class="headerlink" title="开漏输出和推挽输出"></a>开漏输出和推挽输出</h2><p>输出是由输出数据寄存器控制的</p>
+<blockquote>
+<ol>
+<li>如果P-MOS无效、N-MOS有效，就是<strong>开漏输出</strong></li>
+<li>如果P-MOS和N-MOS都有效，就是<strong>推挽输出</strong></li>
+<li>另外，在输出模式下，输入模式也是有效的（也就是配置成输出模式，既可以输出，也可以输入）</li>
+</ol>
+</blockquote>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220173828386.png"
+                      alt="image-20250220173828386"
+                ></p>
+<h2 id="复用开漏-推挽输出"><a href="#复用开漏-推挽输出" class="headerlink" title="复用开漏&#x2F;推挽输出"></a>复用开漏&#x2F;推挽输出</h2><p>复用输出时，引脚的控制权转移到了片上外设，<strong>由片上外设来控制</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220173949426.png"
+                      alt="image-20250220173949426"
+                ></p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ul>
+<li>其实在GPIO的这8种模式中，除了<strong>模拟输入</strong>这个模式<strong>会关闭数字的输入功能</strong>，在其他的7个模式中，所有的输入都是有效的</li>
+</ul>
+<h1 id="LED和蜂鸣器"><a href="#LED和蜂鸣器" class="headerlink" title="LED和蜂鸣器"></a>LED和蜂鸣器</h1><ul>
+<li>LED：发光二极管，正向通电点亮，反向通电不亮</li>
+<li>有源蜂鸣器：内部自带振荡源，将正负极接上直流电压即可持续发声，频率固定</li>
+<li>无源蜂鸣器：内部不带振荡源，需要控制器提供振荡脉冲才可发声，调整提供振荡脉冲的频率，可发出不同频率的声音</li>
+</ul>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220175918205.png"
+                      alt="image-20250220175918205"
+                ></p>
+<h2 id="如何接"><a href="#如何接" class="headerlink" title="如何接"></a>如何接</h2><p>GPIO在推挽输出模式下，高低电平均有比较强的驱动能力，所以在这里，这两种接法均可</p>
+<p>但是在单片机的电路里，一般倾向使用<strong>第一种接法</strong></p>
+<p>因为很多单片机或者芯片，都使用了<strong>高电平弱驱动</strong>，<strong>低电平强驱动</strong>的规则，这样可以一定程度上<strong>避免高低电平打架</strong></p>
+<p>所以如果高电平驱动能力弱，那就不能使用第二种连接方法了（开漏输出模式下，高电平没有驱动能力，不适用）</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220175925353.png"
+                      alt="image-20250220175925353"
+                ></p>
+]]></content>
+      <categories>
+        <category>嵌入式</category>
+      </categories>
+      <tags>
+        <tag>STM32</tag>
+        <tag>GPIO</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Swagger2</title>
     <url>/2023/09/20/Swagger2/</url>
     <content><![CDATA[<p>现如今，前后端分离已经逐渐成为互联网项目一种标准的开发方式，前端与后端交给不同的人员开发，</p>

@@ -13,7 +13,7 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="http://Acatndmouse.github.io/2023/08/29/netty(一)/"/>
+    <link rel="canonical" href="http://Acatndmouse.github.io/2023/09/24/stm32(二)gpio/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
@@ -23,18 +23,17 @@
         
         <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Netty(一)：Netty的诞生以及简短的Netty案例">
-<meta property="og:url" content="http://acatndmouse.github.io/2023/08/29/Netty(%E4%B8%80)/index.html">
+<meta property="og:title" content="STM32(二)GPIO">
+<meta property="og:url" content="http://acatndmouse.github.io/2023/09/24/STM32(%E4%BA%8C)GPIO/index.html">
 <meta property="og:site_name" content="H&#39;Blog">
 <meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://acatndmouse.github.io/images/redefine-og.webp">
-<meta property="article:published_time" content="2023-08-29T09:27:16.000Z">
-<meta property="article:modified_time" content="2023-08-29T09:27:16.000Z">
+<meta property="article:published_time" content="2023-09-24T14:27:48.000Z">
+<meta property="article:modified_time" content="2023-09-24T14:27:48.000Z">
 <meta property="article:author" content="Hua">
-<meta property="article:tag" content="Netty">
-<meta property="article:tag" content="Java">
-<meta property="article:tag" content="中间件">
+<meta property="article:tag" content="STM32">
+<meta property="article:tag" content="GPIO">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://acatndmouse.github.io/images/redefine-og.webp">
     
@@ -48,7 +47,7 @@
     
     <title>
         
-            Netty(一)：Netty的诞生以及简短的Netty案例 | H&#39;B
+            STM32(二)GPIO | H&#39;B
         
     </title>
 
@@ -658,7 +657,7 @@
 		<div class="article-title relative w-full">
 			
 			<div class="w-full flex items-center pt-6 justify-start">
-				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">Netty(一)：Netty的诞生以及简短的Netty案例</h1>
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">STM32(二)GPIO</h1>
 			</div>
 			
 		</div>
@@ -679,15 +678,15 @@
 					<div class="article-meta-info">
     <span class="article-date article-meta-item">
         <i class="fa-regular fa-pen-fancy"></i>&nbsp;
-        <span class="desktop">2023-08-29 17:27:16</span>
-        <span class="mobile">2023-08-29 17:27:16</span>
+        <span class="desktop">2023-09-24 22:27:48</span>
+        <span class="mobile">2023-09-24 22:27:48</span>
         <span class="hover-info">创建</span>
     </span>
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-08-29 17:27:16</span>
-            <span class="mobile">2023-08-29 17:27:16</span>
+            <span class="desktop">2023-09-24 22:27:48</span>
+            <span class="mobile">2023-09-24 22:27:48</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -701,7 +700,7 @@
                     
                         
                         <li>
-                            <a href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>&nbsp;
+                            <a href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a>&nbsp;
                         </li>
                     
                     
@@ -715,15 +714,11 @@
             <ul>
                 
                     <li>
-                        <a href="/tags/Netty/">Netty</a>&nbsp;
+                        <a href="/tags/STM32/">STM32</a>&nbsp;
                     </li>
                 
                     <li>
-                        | <a href="/tags/Java/">Java</a>&nbsp;
-                    </li>
-                
-                    <li>
-                        | <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/">中间件</a>&nbsp;
+                        | <a href="/tags/GPIO/">GPIO</a>&nbsp;
                     </li>
                 
             </ul>
@@ -749,16 +744,186 @@
 
 
 		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
-			<h1 id="为什么Netty-会诞生"><a href="#为什么Netty-会诞生" class="headerlink" title="为什么Netty 会诞生"></a>为什么Netty 会诞生</h1><p>为了解决NIO 编码复杂，但是又想使用NIO，所以netty来了，netty 通过对nio复杂的api进行了封装，使得netty在具备高性能、高吞吐量、低延迟的前提下，还能方便开发人员进行快速开发。</p>
-<h1 id="有哪些使用场景"><a href="#有哪些使用场景" class="headerlink" title="有哪些使用场景"></a>有哪些使用场景</h1><h2 id="互联网行业"><a href="#互联网行业" class="headerlink" title="互联网行业"></a>互联网行业</h2><p>成为大多数中间件和rpc框架的底层通信组件，如dubbo、rocket mq</p>
-<h2 id="游戏行业"><a href="#游戏行业" class="headerlink" title="游戏行业"></a>游戏行业</h2><p>账号登陆服务器、地图服务器之间可以方便的通过 Netty 进行高性能的通信。</p>
-<h2 id="大数据领域"><a href="#大数据领域" class="headerlink" title="大数据领域"></a>大数据领域</h2><p>hadoop和序列化组件avro的rpc框架，都是采用netty作为底层通信组件</p>
-<h1 id="以下是以Netty写的简单demo"><a href="#以下是以Netty写的简单demo" class="headerlink" title="以下是以Netty写的简单demo"></a><strong>以下是以Netty写的简单demo</strong></h1><p>服务端</p>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.netty.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.netty.bootstrap.ServerBootstrap;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.ByteBuf;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.Unpooled;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.*;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.nio.NioEventLoopGroup;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.SocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.nio.NioServerSocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.util.CharsetUtil;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.flogger.Flogger;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NettyServer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        <span class="type">EventLoopGroup</span> <span class="variable">bossGroup</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NioEventLoopGroup</span>(<span class="number">1</span>);</span><br><span class="line">        <span class="type">EventLoopGroup</span> <span class="variable">workerGroup</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NioEventLoopGroup</span>(); <span class="comment">//8</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">ServerBootstrap</span> <span class="variable">bootstrap</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ServerBootstrap</span>();</span><br><span class="line">            bootstrap.group(bossGroup, workerGroup) <span class="comment">//设置两个线程组</span></span><br><span class="line">                    .channel(NioServerSocketChannel.class)</span><br><span class="line">                    .option(ChannelOption.SO_BACKLOG, <span class="number">128</span>)</span><br><span class="line">                    .childOption(ChannelOption.SO_KEEPALIVE, <span class="literal">true</span>)</span><br><span class="line">                    .childHandler(<span class="keyword">new</span> <span class="title class_">ChannelInitializer</span>&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                        <span class="meta">@Override</span></span><br><span class="line">                        <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                            log.info(<span class="string">&quot;客户端channel 初始化&quot;</span>);</span><br><span class="line">                            ch.pipeline().addLast(<span class="keyword">new</span> <span class="title class_">NettyServerHandler</span>());</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="type">ChannelFuture</span> <span class="variable">cf</span> <span class="operator">=</span> bootstrap.bind(<span class="number">9999</span>).sync();</span><br><span class="line">            log.info(<span class="string">&quot;服务启动成功....&quot;</span>);</span><br><span class="line">            cf.addListener((ChannelFutureListener) future -&gt; log.info(<span class="string">&quot;监听端口:&#123;&#125;&quot;</span>,future.isSuccess()));</span><br><span class="line">            cf.channel().closeFuture().sync();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            bossGroup.shutdownGracefully();</span><br><span class="line">            workerGroup.shutdownGracefully();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">NettyServerHandler</span> <span class="keyword">extends</span> <span class="title class_">ChannelInboundHandlerAdapter</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">channelRead</span><span class="params">(ChannelHandlerContext ctx, Object msg)</span> &#123;</span><br><span class="line">        <span class="type">ByteBuf</span> <span class="variable">byteBuf</span> <span class="operator">=</span> (ByteBuf) msg;</span><br><span class="line">        log.info(<span class="string">&quot;收到客户端消息:&#123;&#125;&quot;</span>,byteBuf.toString(CharsetUtil.UTF_8));</span><br><span class="line">        <span class="comment">// 现在通过通道给客户端回消息</span></span><br><span class="line">        ctx.writeAndFlush(Unpooled.copiedBuffer(<span class="string">&quot;客户端你好：我收到你的消息了&quot;</span>, CharsetUtil.UTF_8));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">channelReadComplete</span><span class="params">(ChannelHandlerContext ctx)</span> &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>客户端</p>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.netty.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.netty.bootstrap.Bootstrap;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.ByteBuf;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.Unpooled;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.*;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.nio.NioEventLoopGroup;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.SocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.nio.NioSocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.util.CharsetUtil;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NettyClient</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        <span class="type">EventLoopGroup</span> <span class="variable">group</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NioEventLoopGroup</span>();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">Bootstrap</span> <span class="variable">bootstrap</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Bootstrap</span>();</span><br><span class="line">            <span class="comment">//设置相关参数</span></span><br><span class="line">            bootstrap.group(group)</span><br><span class="line">                    .channel(NioSocketChannel.class)</span><br><span class="line">                    .handler(<span class="keyword">new</span> <span class="title class_">ChannelInitializer</span>&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                        <span class="meta">@Override</span></span><br><span class="line">                        <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                            ch.pipeline().addLast(<span class="keyword">new</span> <span class="title class_">NettyClientHandler</span>()); <span class="comment">//加入自己的处理器</span></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">&quot;客户端 ok..&quot;</span>);</span><br><span class="line">            <span class="type">ChannelFuture</span> <span class="variable">channelFuture</span> <span class="operator">=</span> bootstrap.connect(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">9999</span>).sync();</span><br><span class="line">            <span class="comment">//给关闭通道进行监听</span></span><br><span class="line">            channelFuture.channel().closeFuture().sync();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line"></span><br><span class="line">            group.shutdownGracefully();</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">NettyClientHandler</span> <span class="keyword">extends</span> <span class="title class_">ChannelInboundHandlerAdapter</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">channelActive</span><span class="params">(ChannelHandlerContext ctx)</span> &#123;</span><br><span class="line">        ctx.writeAndFlush(Unpooled.copiedBuffer(<span class="string">&quot;服务端你好：我和你建立连接了&quot;</span>, CharsetUtil.UTF_8));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">channelRead</span><span class="params">(ChannelHandlerContext ctx, Object msg)</span> &#123;</span><br><span class="line">        <span class="type">ByteBuf</span> <span class="variable">byteBuf</span> <span class="operator">=</span> (ByteBuf) msg;</span><br><span class="line">        log.info(<span class="string">&quot;收到服务端消息:&#123;&#125;&quot;</span>, byteBuf.toString(CharsetUtil.UTF_8));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
+			<h1 id="GPIO介绍"><a href="#GPIO介绍" class="headerlink" title="GPIO介绍"></a>GPIO介绍</h1><p><strong>GPIO（General Purpose Input Output）通用输入输出口</strong></p>
+<ul>
+<li>可配置为8种输入输出模式</li>
+<li>引脚电平：0V~3.3V，部分引脚可容忍5V</li>
+<li>输出模式下可控制端口输出高低电平，用以驱动LED、控制蜂鸣器、模拟通信协议输出时序等</li>
+<li>输入模式下可读取端口的高低电平或电压，用于读取按键输入、外接模块电平信号输入、ADC电压采集、模拟通信协议接收数据等</li>
+</ul>
+<h1 id="GPIO基本结构"><a href="#GPIO基本结构" class="headerlink" title="GPIO基本结构"></a>GPIO基本结构</h1><p>寄存器上一节有讲过，用于<strong>存储和操作数据</strong></p>
+<p>驱动器是用来<strong>增加信号的驱动能力</strong>的，如果要进行点灯这样的操作，就需要驱动器来负责增大驱动能力</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220004237221.png"
+                      alt="image-20250220004237221"
+                ></p>
+<h1 id="GPIO位结构"><a href="#GPIO位结构" class="headerlink" title="GPIO位结构"></a>GPIO位结构</h1><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220010948159.png"
+                      alt="image-20250220010948159"
+                ></p>
+<h2 id="Vdd和Vss"><a href="#Vdd和Vss" class="headerlink" title="Vdd和Vss"></a>Vdd和Vss</h2><p>在STM32微控制器中，Vdd 和 Vss 是芯片的电源引脚，用于为芯片供电。例如：</p>
+<ul>
+<li><strong>Vdd</strong>：连接到 3.3V 电源。</li>
+<li><strong>Vss</strong>：连接到地，0V（GND）</li>
+</ul>
+<h2 id="保护二极管"><a href="#保护二极管" class="headerlink" title="保护二极管"></a>保护二极管</h2><p>保护二极管：<strong>保护内部电路</strong>。当输入电压在0~3.3V之间，两个保护二极管均不会导通，这时二极管对电路没有影响</p>
+<p><strong>大于3.3V</strong>，上方的保护二极管会被导通，电流会从I&#x2F;O引脚流向Vdd</p>
+<p><strong>小于0V</strong>（负电压），下方的保护二极管会被导通，电流会从Vss流向I&#x2F;O引脚（电流会从<strong>高电压流向低电压</strong>，即从0–&gt;-5）</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220011914846.png"
+                      alt="image-20250220011914846"
+                ></p>
+<h2 id="上拉-下拉输入模式"><a href="#上拉-下拉输入模式" class="headerlink" title="上拉&#x2F;下拉输入模式"></a>上拉&#x2F;下拉输入模式</h2><blockquote>
+<p><strong>上面导通</strong>，下面断开，就是<strong>上拉输入模式</strong></p>
+<p><strong>下面导通</strong>，上面断开，就是<strong>下拉输入模式</strong></p>
+<p>两个<strong>都断开</strong>，就是<strong>浮空输入模式</strong></p>
+</blockquote>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220012523523.png"
+                      alt="image-20250220012523523"
+                ></p>
+<h3 id="上拉和下拉的作用"><a href="#上拉和下拉的作用" class="headerlink" title="上拉和下拉的作用"></a>上拉和下拉的作用</h3><p><strong>作用</strong>：为了给输入提供一个默认的输入电平的</p>
+<p>因为对应一个数字的端口，输入不是高电平就是低电平</p>
+<p>那如果输入引脚啥都不接，到底是算高电平还是还是低电平呢？</p>
+<blockquote>
+<p>这就不好说了，对于实际情况，如果输入什么都不接，这时输入就会处于一种<strong>浮空状态</strong>（即不稳定的状态）</p>
+<p>这时引脚的输入电平就极易受外界干扰而改变，受到一点扰动就会变化</p>
+<p><strong>为了避免引脚悬空（浮空）导致的输入数据不确定</strong>，<strong>我们就需要在这里加上 上拉或者下拉电阻</strong></p>
+<ul>
+<li><p>如果接入上拉电阻，当引脚悬空时，还有上拉电阻来保证引脚的高电平，</p>
+<p>所以上拉输入可以默认为高电平的输入模式</p>
+</li>
+<li><p>如果接入下拉电阻，当引脚悬空时，还有下拉电阻来保证引脚的低电平，</p>
+<p>所以下拉输入可以默认为低电平的输入模式</p>
+</li>
+</ul>
+</blockquote>
+<p><strong>注意：</strong>这个上拉电阻和下拉电阻的阻值都是比较大的，是一种弱上拉和弱下拉，<strong>目的是尽量不影响正常的输入操作</strong></p>
+<h2 id="施密特触发器"><a href="#施密特触发器" class="headerlink" title="施密特触发器"></a>施密特触发器</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220145720533.png"
+                      alt="image-20250220145720533"
+                ></p>
+<p>*<strong>这里应该是施密特触发器，只是画错了</strong></p>
+<p>作用：对输入电压进行整形</p>
+<p>执行逻辑：如果输入电压<strong>大于</strong>某一阈值，输出就会瞬间升为高电平</p>
+<p>​				   如果输入电压<strong>小于</strong>某一阈值，输出就会瞬间升为低电平</p>
+<p>举例：因为这个引脚的波形是外界输入的，虽然是数字信号，实际情况下可能会产生各种失真</p>
+<blockquote>
+<p>这里用了两个<strong>比较阈值</strong>（绿线）来进行判断，中间留有一定的变化范围，这样可以有效避免因信号波动造成的输出抖动现象，经过施密特触发器整形的波形就可以直接写入<strong>输入数据寄存器</strong>了</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220155155148.png"
+                      alt="image-20250220155155148"
+                ></p>
+</blockquote>
+<h2 id="输入数据寄存器"><a href="#输入数据寄存器" class="headerlink" title="输入数据寄存器"></a>输入数据寄存器</h2><p>通过程序就能读取输入数据寄存器中的某一位数据，就可以知道端口的输入电平了</p>
+<h2 id="片上外设"><a href="#片上外设" class="headerlink" title="片上外设"></a>片上外设</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220161732886.png"
+                      alt="image-20250220161732886"
+                ></p>
+<ul>
+<li><strong>模拟输入</strong> 连接到ADC上的，因为ADC需要<strong>接收模拟量</strong>，所以这根线是<strong>接到施密特触发器前</strong></li>
+<li><strong>复用功能输入</strong> 这个是连接到其他需要读取端口的外设上的 ，比如串口的输入引脚等，这根线接收的是<strong>数字量</strong>，所以这根线是<strong>接到施密特触发器后</strong></li>
+</ul>
+<h2 id="位设置-位清除寄存器"><a href="#位设置-位清除寄存器" class="headerlink" title="位设置&#x2F;位清除寄存器"></a>位设置&#x2F;位清除寄存器</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220162910089.png"
+                      alt="image-20250220162910089"
+                ></p>
+<p>位置1：</p>
+<p>如果我们要对某一位进行置1的操作，在<strong>位设置寄存器</strong>的对应位写1即可，剩下不需要操作的位写0。</p>
+<p>这样它内部就会有电路，自动将输出数据奇存器中对应位置为1，而剩下写0的位则保持不变。</p>
+<p>这样就保证了只操作其中某一位而不影响其它位，并且这是一步到位的操作</p>
+<p>清0：</p>
+<p>如果想对某一位进行清0的操作，就在<strong>位清除寄存器</strong>的对应位写1即可，这样内部电路就会把这一位清0了</p>
+<h2 id="MOS管"><a href="#MOS管" class="headerlink" title="MOS管"></a>MOS管</h2><p>MOS管就是一种电子开关</p>
+<p>我们的信号来控制开关的导通和关闭，开关负责将IO口接到VDD或者VSS</p>
+<p>在这里可以选择<strong>推挽、开漏或关闭</strong>三种输出方式</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220163202677.png"
+                      alt="image-20250220163202677"
+                ></p>
+<h1 id="GPIO的八种工作模式"><a href="#GPIO的八种工作模式" class="headerlink" title="GPIO的八种工作模式"></a>GPIO的八种工作模式</h1><p>通过配置GPIO的端口配置寄存器 ，端口可以配置成以下8种模式</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220171704985.png"
+                      alt="image-20250220171704985"
+                ></p>
+<h2 id="浮空-上拉-下拉输入"><a href="#浮空-上拉-下拉输入" class="headerlink" title="浮空&#x2F;上拉&#x2F;下拉输入"></a>浮空&#x2F;上拉&#x2F;下拉输入</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220173316357.png"
+                      alt="image-20250220173316357"
+                ></p>
+<h2 id="模拟输入"><a href="#模拟输入" class="headerlink" title="模拟输入"></a>模拟输入</h2><p>当我们使用ADC的时候，将引脚配置为模拟输入就行了，其他时候，一般用不到模拟输入</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220173337171.png"
+                      alt="image-20250220173337171"
+                ></p>
+<h2 id="开漏输出和推挽输出"><a href="#开漏输出和推挽输出" class="headerlink" title="开漏输出和推挽输出"></a>开漏输出和推挽输出</h2><p>输出是由输出数据寄存器控制的</p>
+<blockquote>
+<ol>
+<li>如果P-MOS无效、N-MOS有效，就是<strong>开漏输出</strong></li>
+<li>如果P-MOS和N-MOS都有效，就是<strong>推挽输出</strong></li>
+<li>另外，在输出模式下，输入模式也是有效的（也就是配置成输出模式，既可以输出，也可以输入）</li>
+</ol>
+</blockquote>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220173828386.png"
+                      alt="image-20250220173828386"
+                ></p>
+<h2 id="复用开漏-推挽输出"><a href="#复用开漏-推挽输出" class="headerlink" title="复用开漏&#x2F;推挽输出"></a>复用开漏&#x2F;推挽输出</h2><p>复用输出时，引脚的控制权转移到了片上外设，<strong>由片上外设来控制</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220173949426.png"
+                      alt="image-20250220173949426"
+                ></p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ul>
+<li>其实在GPIO的这8种模式中，除了<strong>模拟输入</strong>这个模式<strong>会关闭数字的输入功能</strong>，在其他的7个模式中，所有的输入都是有效的</li>
+</ul>
+<h1 id="LED和蜂鸣器"><a href="#LED和蜂鸣器" class="headerlink" title="LED和蜂鸣器"></a>LED和蜂鸣器</h1><ul>
+<li>LED：发光二极管，正向通电点亮，反向通电不亮</li>
+<li>有源蜂鸣器：内部自带振荡源，将正负极接上直流电压即可持续发声，频率固定</li>
+<li>无源蜂鸣器：内部不带振荡源，需要控制器提供振荡脉冲才可发声，调整提供振荡脉冲的频率，可发出不同频率的声音</li>
+</ul>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220175918205.png"
+                      alt="image-20250220175918205"
+                ></p>
+<h2 id="如何接"><a href="#如何接" class="headerlink" title="如何接"></a>如何接</h2><p>GPIO在推挽输出模式下，高低电平均有比较强的驱动能力，所以在这里，这两种接法均可</p>
+<p>但是在单片机的电路里，一般倾向使用<strong>第一种接法</strong></p>
+<p>因为很多单片机或者芯片，都使用了<strong>高电平弱驱动</strong>，<strong>低电平强驱动</strong>的规则，这样可以一定程度上<strong>避免高低电平打架</strong></p>
+<p>所以如果高电平驱动能力弱，那就不能使用第二种连接方法了（开漏输出模式下，高电平没有驱动能力，不适用）</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/STM32(%E4%BA%8C)GPIO/image-20250220175925353.png"
+                      alt="image-20250220175925353"
+                ></p>
 
 		</div>
 
@@ -766,18 +931,18 @@
 		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
 			<div class="article-copyright-info-container">
     <ul>
-        <li><strong>标题:</strong> Netty(一)：Netty的诞生以及简短的Netty案例</li>
+        <li><strong>标题:</strong> STM32(二)GPIO</li>
         <li><strong>作者:</strong> Hua</li>
         <li><strong>创建于
-                :</strong> 2023-08-29 17:27:16</li>
+                :</strong> 2023-09-24 22:27:48</li>
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-08-29 17:27:16
+                    :</strong> 2023-09-24 22:27:48
             </li>
         
         <li>
-            <strong>链接:</strong> https://github.com/Acatndmouse/2023/08/29/Netty(一)/
+            <strong>链接:</strong> https://github.com/Acatndmouse/2023/09/24/STM32(二)GPIO/
         </li>
         <li>
             <strong>
@@ -799,15 +964,11 @@
 		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
 			
 			<li class="tag-item mx-0.5">
-				<a href="/tags/Netty/">#Netty</a>&nbsp;
+				<a href="/tags/STM32/">#STM32</a>&nbsp;
 			</li>
 			
 			<li class="tag-item mx-0.5">
-				<a href="/tags/Java/">#Java</a>&nbsp;
-			</li>
-			
-			<li class="tag-item mx-0.5">
-				<a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/">#中间件</a>&nbsp;
+				<a href="/tags/GPIO/">#GPIO</a>&nbsp;
 			</li>
 			
 		</ul>
@@ -818,23 +979,11 @@
 		
 		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
 			
-			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
-				<a class="prev" rel="prev" href="/2023/08/29/Netty(%E4%BA%8C)Netty%E7%9A%84%E7%BB%84%E4%BB%B6/">
-					<span class="left arrow-icon flex justify-center items-center">
-						<i class="fa-solid fa-chevron-left"></i>
-					</span>
-					<span class="title flex justify-center items-center">
-						<span class="post-nav-title-item">Netty(二)Netty的组件</span>
-						<span class="post-nav-item">上一篇</span>
-					</span>
-				</a>
-			</div>
-			
 			
 			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
-				<a class="next" rel="next" href="/2023/08/28/BIO-NIO-AIO%E7%9A%84%E5%8C%BA%E5%88%AB/">
+				<a class="next" rel="next" href="/2023/09/23/STM32(%E4%B8%80)%E4%BB%8B%E7%BB%8D/">
 					<span class="title flex justify-center items-center">
-						<span class="post-nav-title-item">BIO|NIO|AIO的区别</span>
+						<span class="post-nav-title-item">STM32(一)介绍</span>
 						<span class="post-nav-item">下一篇</span>
 					</span>
 					<span class="right arrow-icon flex justify-center items-center">
@@ -898,8 +1047,8 @@
 		<div class="post-toc-wrap">
 	<div class="post-toc">
 		<div class="toc-title">目录</div>
-		<div class="page-title">Netty(一)：Netty的诞生以及简短的Netty案例</div>
-		<ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88Netty-%E4%BC%9A%E8%AF%9E%E7%94%9F"><span class="nav-text">为什么Netty 会诞生</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">有哪些使用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%92%E8%81%94%E7%BD%91%E8%A1%8C%E4%B8%9A"><span class="nav-text">互联网行业</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%B8%E6%88%8F%E8%A1%8C%E4%B8%9A"><span class="nav-text">游戏行业</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E6%95%B0%E6%8D%AE%E9%A2%86%E5%9F%9F"><span class="nav-text">大数据领域</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A5%E4%B8%8B%E6%98%AF%E4%BB%A5Netty%E5%86%99%E7%9A%84%E7%AE%80%E5%8D%95demo"><span class="nav-text">以下是以Netty写的简单demo</span></a></li></ol>
+		<div class="page-title">STM32(二)GPIO</div>
+		<ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GPIO%E4%BB%8B%E7%BB%8D"><span class="nav-text">GPIO介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GPIO%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"><span class="nav-text">GPIO基本结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GPIO%E4%BD%8D%E7%BB%93%E6%9E%84"><span class="nav-text">GPIO位结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Vdd%E5%92%8CVss"><span class="nav-text">Vdd和Vss</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%9D%E6%8A%A4%E4%BA%8C%E6%9E%81%E7%AE%A1"><span class="nav-text">保护二极管</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E6%8B%89-%E4%B8%8B%E6%8B%89%E8%BE%93%E5%85%A5%E6%A8%A1%E5%BC%8F"><span class="nav-text">上拉&#x2F;下拉输入模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E6%8B%89%E5%92%8C%E4%B8%8B%E6%8B%89%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-text">上拉和下拉的作用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%BD%E5%AF%86%E7%89%B9%E8%A7%A6%E5%8F%91%E5%99%A8"><span class="nav-text">施密特触发器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%95%B0%E6%8D%AE%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-text">输入数据寄存器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%87%E4%B8%8A%E5%A4%96%E8%AE%BE"><span class="nav-text">片上外设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8D%E8%AE%BE%E7%BD%AE-%E4%BD%8D%E6%B8%85%E9%99%A4%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-text">位设置&#x2F;位清除寄存器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MOS%E7%AE%A1"><span class="nav-text">MOS管</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GPIO%E7%9A%84%E5%85%AB%E7%A7%8D%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="nav-text">GPIO的八种工作模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%AE%E7%A9%BA-%E4%B8%8A%E6%8B%89-%E4%B8%8B%E6%8B%89%E8%BE%93%E5%85%A5"><span class="nav-text">浮空&#x2F;上拉&#x2F;下拉输入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E8%BE%93%E5%85%A5"><span class="nav-text">模拟输入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E6%BC%8F%E8%BE%93%E5%87%BA%E5%92%8C%E6%8E%A8%E6%8C%BD%E8%BE%93%E5%87%BA"><span class="nav-text">开漏输出和推挽输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E7%94%A8%E5%BC%80%E6%BC%8F-%E6%8E%A8%E6%8C%BD%E8%BE%93%E5%87%BA"><span class="nav-text">复用开漏&#x2F;推挽输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F"><span class="nav-text">注意</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LED%E5%92%8C%E8%9C%82%E9%B8%A3%E5%99%A8"><span class="nav-text">LED和蜂鸣器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%8E%A5"><span class="nav-text">如何接</span></a></li></ol></li></ol>
 
 	</div>
 </div>
