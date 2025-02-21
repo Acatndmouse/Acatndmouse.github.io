@@ -13,7 +13,7 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="http://Acatndmouse.github.io/2023/09/24/stm32(二)gpio/"/>
+    <link rel="canonical" href="http://Acatndmouse.github.io/2023/09/24/stm32-二-gpio/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
@@ -24,7 +24,7 @@
         <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="STM32(二)GPIO">
-<meta property="og:url" content="http://acatndmouse.github.io/2023/09/24/STM32(%E4%BA%8C)GPIO/index.html">
+<meta property="og:url" content="http://acatndmouse.github.io/2023/09/24/STM32-%E4%BA%8C-GPIO/index.html">
 <meta property="og:site_name" content="H&#39;Blog">
 <meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="zh_CN">
@@ -753,18 +753,20 @@
 </ul>
 <h1 id="GPIO基本结构"><a href="#GPIO基本结构" class="headerlink" title="GPIO基本结构"></a>GPIO基本结构</h1><p>寄存器上一节有讲过，用于<strong>存储和操作数据</strong></p>
 <p>驱动器是用来<strong>增加信号的驱动能力</strong>的，如果要进行点灯这样的操作，就需要驱动器来负责增大驱动能力</p>
-<p><img  
+<img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220004237221.png"
-                      alt="image-20250220004237221"
-                ></p>
-<h1 id="GPIO位结构"><a href="#GPIO位结构" class="headerlink" title="GPIO位结构"></a>GPIO位结构</h1><p><img  
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220004237221.png"
+                      class="" title="image-20250220004237221"
+                >
+
+<h1 id="GPIO位结构"><a href="#GPIO位结构" class="headerlink" title="GPIO位结构"></a>GPIO位结构</h1><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220010948159.png"
-                      alt="image-20250220010948159"
-                ></p>
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220010948159.png"
+                      class="" title="image-20250220010948159"
+                >
+
 <h2 id="Vdd和Vss"><a href="#Vdd和Vss" class="headerlink" title="Vdd和Vss"></a>Vdd和Vss</h2><p>在STM32微控制器中，Vdd 和 Vss 是芯片的电源引脚，用于为芯片供电。例如：</p>
 <ul>
 <li><strong>Vdd</strong>：连接到 3.3V 电源。</li>
@@ -773,23 +775,25 @@
 <h2 id="保护二极管"><a href="#保护二极管" class="headerlink" title="保护二极管"></a>保护二极管</h2><p>保护二极管：<strong>保护内部电路</strong>。当输入电压在0~3.3V之间，两个保护二极管均不会导通，这时二极管对电路没有影响</p>
 <p><strong>大于3.3V</strong>，上方的保护二极管会被导通，电流会从I&#x2F;O引脚流向Vdd</p>
 <p><strong>小于0V</strong>（负电压），下方的保护二极管会被导通，电流会从Vss流向I&#x2F;O引脚（电流会从<strong>高电压流向低电压</strong>，即从0–&gt;-5）</p>
-<p><img  
+<img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220011914846.png"
-                      alt="image-20250220011914846"
-                ></p>
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220011914846.png"
+                      class="" title="image-20250220011914846"
+                >
+
 <h2 id="上拉-下拉输入模式"><a href="#上拉-下拉输入模式" class="headerlink" title="上拉&#x2F;下拉输入模式"></a>上拉&#x2F;下拉输入模式</h2><blockquote>
 <p><strong>上面导通</strong>，下面断开，就是<strong>上拉输入模式</strong></p>
 <p><strong>下面导通</strong>，上面断开，就是<strong>下拉输入模式</strong></p>
 <p>两个<strong>都断开</strong>，就是<strong>浮空输入模式</strong></p>
 </blockquote>
-<p><img  
+<img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220012523523.png"
-                      alt="image-20250220012523523"
-                ></p>
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220012523523.png"
+                      class="" title="image-20250220012523523"
+                >
+
 <h3 id="上拉和下拉的作用"><a href="#上拉和下拉的作用" class="headerlink" title="上拉和下拉的作用"></a>上拉和下拉的作用</h3><p><strong>作用</strong>：为了给输入提供一个默认的输入电平的</p>
 <p>因为对应一个数字的端口，输入不是高电平就是低电平</p>
 <p>那如果输入引脚啥都不接，到底是算高电平还是还是低电平呢？</p>
@@ -807,12 +811,13 @@
 </ul>
 </blockquote>
 <p><strong>注意：</strong>这个上拉电阻和下拉电阻的阻值都是比较大的，是一种弱上拉和弱下拉，<strong>目的是尽量不影响正常的输入操作</strong></p>
-<h2 id="施密特触发器"><a href="#施密特触发器" class="headerlink" title="施密特触发器"></a>施密特触发器</h2><p><img  
+<h2 id="施密特触发器"><a href="#施密特触发器" class="headerlink" title="施密特触发器"></a>施密特触发器</h2><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220145720533.png"
-                      alt="image-20250220145720533"
-                ></p>
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220145720533.png"
+                      class="" title="image-20250220145720533"
+                >
+
 <p>*<strong>这里应该是施密特触发器，只是画错了</strong></p>
 <p>作用：对输入电压进行整形</p>
 <p>执行逻辑：如果输入电压<strong>大于</strong>某一阈值，输出就会瞬间升为高电平</p>
@@ -820,30 +825,32 @@
 <p>举例：因为这个引脚的波形是外界输入的，虽然是数字信号，实际情况下可能会产生各种失真</p>
 <blockquote>
 <p>这里用了两个<strong>比较阈值</strong>（绿线）来进行判断，中间留有一定的变化范围，这样可以有效避免因信号波动造成的输出抖动现象，经过施密特触发器整形的波形就可以直接写入<strong>输入数据寄存器</strong>了</p>
-<p><img  
+<img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220155155148.png"
-                      alt="image-20250220155155148"
-                ></p>
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220155155148.png"
+                      class="" title="image-20250220155155148"
+                >
 </blockquote>
 <h2 id="输入数据寄存器"><a href="#输入数据寄存器" class="headerlink" title="输入数据寄存器"></a>输入数据寄存器</h2><p>通过程序就能读取输入数据寄存器中的某一位数据，就可以知道端口的输入电平了</p>
-<h2 id="片上外设"><a href="#片上外设" class="headerlink" title="片上外设"></a>片上外设</h2><p><img  
+<h2 id="片上外设"><a href="#片上外设" class="headerlink" title="片上外设"></a>片上外设</h2><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220161732886.png"
-                      alt="image-20250220161732886"
-                ></p>
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220161732886.png"
+                      class="" title="image-20250220161732886"
+                >
+
 <ul>
 <li><strong>模拟输入</strong> 连接到ADC上的，因为ADC需要<strong>接收模拟量</strong>，所以这根线是<strong>接到施密特触发器前</strong></li>
 <li><strong>复用功能输入</strong> 这个是连接到其他需要读取端口的外设上的 ，比如串口的输入引脚等，这根线接收的是<strong>数字量</strong>，所以这根线是<strong>接到施密特触发器后</strong></li>
 </ul>
-<h2 id="位设置-位清除寄存器"><a href="#位设置-位清除寄存器" class="headerlink" title="位设置&#x2F;位清除寄存器"></a>位设置&#x2F;位清除寄存器</h2><p><img  
+<h2 id="位设置-位清除寄存器"><a href="#位设置-位清除寄存器" class="headerlink" title="位设置&#x2F;位清除寄存器"></a>位设置&#x2F;位清除寄存器</h2><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220162910089.png"
-                      alt="image-20250220162910089"
-                ></p>
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220162910089.png"
+                      class="" title="image-20250220162910089"
+                >
+
 <p>位置1：</p>
 <p>如果我们要对某一位进行置1的操作，在<strong>位设置寄存器</strong>的对应位写1即可，剩下不需要操作的位写0。</p>
 <p>这样它内部就会有电路，自动将输出数据奇存器中对应位置为1，而剩下写0的位则保持不变。</p>
@@ -853,32 +860,36 @@
 <h2 id="MOS管"><a href="#MOS管" class="headerlink" title="MOS管"></a>MOS管</h2><p>MOS管就是一种电子开关</p>
 <p>我们的信号来控制开关的导通和关闭，开关负责将IO口接到VDD或者VSS</p>
 <p>在这里可以选择<strong>推挽、开漏或关闭</strong>三种输出方式</p>
-<p><img  
+<img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220163202677.png"
-                      alt="image-20250220163202677"
-                ></p>
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220163202677.png"
+                      class="" title="image-20250220163202677"
+                >
+
 <h1 id="GPIO的八种工作模式"><a href="#GPIO的八种工作模式" class="headerlink" title="GPIO的八种工作模式"></a>GPIO的八种工作模式</h1><p>通过配置GPIO的端口配置寄存器 ，端口可以配置成以下8种模式</p>
-<p><img  
+<img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220171704985.png"
-                      alt="image-20250220171704985"
-                ></p>
-<h2 id="浮空-上拉-下拉输入"><a href="#浮空-上拉-下拉输入" class="headerlink" title="浮空&#x2F;上拉&#x2F;下拉输入"></a>浮空&#x2F;上拉&#x2F;下拉输入</h2><p><img  
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220171704985.png"
+                      class="" title="image-20250220171704985"
+                >
+
+<h2 id="浮空-上拉-下拉输入"><a href="#浮空-上拉-下拉输入" class="headerlink" title="浮空&#x2F;上拉&#x2F;下拉输入"></a>浮空&#x2F;上拉&#x2F;下拉输入</h2><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220173316357.png"
-                      alt="image-20250220173316357"
-                ></p>
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220173316357.png"
+                      class="" title="image-20250220173316357"
+                >
+
 <h2 id="模拟输入"><a href="#模拟输入" class="headerlink" title="模拟输入"></a>模拟输入</h2><p>当我们使用ADC的时候，将引脚配置为模拟输入就行了，其他时候，一般用不到模拟输入</p>
-<p><img  
+<img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220173337171.png"
-                      alt="image-20250220173337171"
-                ></p>
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220173337171.png"
+                      class="" title="image-20250220173337171"
+                >
+
 <h2 id="开漏输出和推挽输出"><a href="#开漏输出和推挽输出" class="headerlink" title="开漏输出和推挽输出"></a>开漏输出和推挽输出</h2><p>输出是由输出数据寄存器控制的</p>
 <blockquote>
 <ol>
@@ -887,19 +898,23 @@
 <li>另外，在输出模式下，输入模式也是有效的（也就是配置成输出模式，既可以输出，也可以输入）</li>
 </ol>
 </blockquote>
-<p><img  
+<img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220173828386.png"
-                      alt="image-20250220173828386"
-                ></p>
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220173828386.png"
+                      class="" title="image-20250220173828386"
+                >
+
 <h2 id="复用开漏-推挽输出"><a href="#复用开漏-推挽输出" class="headerlink" title="复用开漏&#x2F;推挽输出"></a>复用开漏&#x2F;推挽输出</h2><p>复用输出时，引脚的控制权转移到了片上外设，<strong>由片上外设来控制</strong></p>
-<p><img  
+<img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220173949426.png"
-                      alt="image-20250220173949426"
-                ></p>
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220173949426.png"
+                      class="" title="image-20250220173949426"
+                >
+
+
+
 <h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ul>
 <li>其实在GPIO的这8种模式中，除了<strong>模拟输入</strong>这个模式<strong>会关闭数字的输入功能</strong>，在其他的7个模式中，所有的输入都是有效的</li>
 </ul>
@@ -908,22 +923,23 @@
 <li>有源蜂鸣器：内部自带振荡源，将正负极接上直流电压即可持续发声，频率固定</li>
 <li>无源蜂鸣器：内部不带振荡源，需要控制器提供振荡脉冲才可发声，调整提供振荡脉冲的频率，可发出不同频率的声音</li>
 </ul>
-<p><img  
+<img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220175918205.png"
-                      alt="image-20250220175918205"
-                ></p>
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220175918205.png"
+                      class="" title="image-20250220175918205"
+                >
+
 <h2 id="如何接"><a href="#如何接" class="headerlink" title="如何接"></a>如何接</h2><p>GPIO在推挽输出模式下，高低电平均有比较强的驱动能力，所以在这里，这两种接法均可</p>
 <p>但是在单片机的电路里，一般倾向使用<strong>第一种接法</strong></p>
 <p>因为很多单片机或者芯片，都使用了<strong>高电平弱驱动</strong>，<strong>低电平强驱动</strong>的规则，这样可以一定程度上<strong>避免高低电平打架</strong></p>
 <p>所以如果高电平驱动能力弱，那就不能使用第二种连接方法了（开漏输出模式下，高电平没有驱动能力，不适用）</p>
-<p><img  
+<img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220175925353.png"
-                      alt="image-20250220175925353"
-                ></p>
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220175925353.png"
+                      class="" title="image-20250220175925353"
+                >
 
 		</div>
 
@@ -942,7 +958,7 @@
             </li>
         
         <li>
-            <strong>链接:</strong> https://github.com/Acatndmouse/2023/09/24/STM32(二)GPIO/
+            <strong>链接:</strong> https://github.com/Acatndmouse/2023/09/24/STM32-二-GPIO/
         </li>
         <li>
             <strong>

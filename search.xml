@@ -1,29 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Netty(一)：Netty的诞生以及简短的Netty案例</title>
-    <url>/2023/08/29/Netty(%E4%B8%80)/</url>
-    <content><![CDATA[<h1 id="为什么Netty-会诞生"><a href="#为什么Netty-会诞生" class="headerlink" title="为什么Netty 会诞生"></a>为什么Netty 会诞生</h1><p>为了解决NIO 编码复杂，但是又想使用NIO，所以netty来了，netty 通过对nio复杂的api进行了封装，使得netty在具备高性能、高吞吐量、低延迟的前提下，还能方便开发人员进行快速开发。</p>
-<h1 id="有哪些使用场景"><a href="#有哪些使用场景" class="headerlink" title="有哪些使用场景"></a>有哪些使用场景</h1><h2 id="互联网行业"><a href="#互联网行业" class="headerlink" title="互联网行业"></a>互联网行业</h2><p>成为大多数中间件和rpc框架的底层通信组件，如dubbo、rocket mq</p>
-<h2 id="游戏行业"><a href="#游戏行业" class="headerlink" title="游戏行业"></a>游戏行业</h2><p>账号登陆服务器、地图服务器之间可以方便的通过 Netty 进行高性能的通信。</p>
-<h2 id="大数据领域"><a href="#大数据领域" class="headerlink" title="大数据领域"></a>大数据领域</h2><p>hadoop和序列化组件avro的rpc框架，都是采用netty作为底层通信组件</p>
-<h1 id="以下是以Netty写的简单demo"><a href="#以下是以Netty写的简单demo" class="headerlink" title="以下是以Netty写的简单demo"></a><strong>以下是以Netty写的简单demo</strong></h1><p>服务端</p>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.netty.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.netty.bootstrap.ServerBootstrap;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.ByteBuf;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.Unpooled;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.*;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.nio.NioEventLoopGroup;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.SocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.nio.NioServerSocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.util.CharsetUtil;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.flogger.Flogger;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NettyServer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        <span class="type">EventLoopGroup</span> <span class="variable">bossGroup</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NioEventLoopGroup</span>(<span class="number">1</span>);</span><br><span class="line">        <span class="type">EventLoopGroup</span> <span class="variable">workerGroup</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NioEventLoopGroup</span>(); <span class="comment">//8</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">ServerBootstrap</span> <span class="variable">bootstrap</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ServerBootstrap</span>();</span><br><span class="line">            bootstrap.group(bossGroup, workerGroup) <span class="comment">//设置两个线程组</span></span><br><span class="line">                    .channel(NioServerSocketChannel.class)</span><br><span class="line">                    .option(ChannelOption.SO_BACKLOG, <span class="number">128</span>)</span><br><span class="line">                    .childOption(ChannelOption.SO_KEEPALIVE, <span class="literal">true</span>)</span><br><span class="line">                    .childHandler(<span class="keyword">new</span> <span class="title class_">ChannelInitializer</span>&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                        <span class="meta">@Override</span></span><br><span class="line">                        <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                            log.info(<span class="string">&quot;客户端channel 初始化&quot;</span>);</span><br><span class="line">                            ch.pipeline().addLast(<span class="keyword">new</span> <span class="title class_">NettyServerHandler</span>());</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="type">ChannelFuture</span> <span class="variable">cf</span> <span class="operator">=</span> bootstrap.bind(<span class="number">9999</span>).sync();</span><br><span class="line">            log.info(<span class="string">&quot;服务启动成功....&quot;</span>);</span><br><span class="line">            cf.addListener((ChannelFutureListener) future -&gt; log.info(<span class="string">&quot;监听端口:&#123;&#125;&quot;</span>,future.isSuccess()));</span><br><span class="line">            cf.channel().closeFuture().sync();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            bossGroup.shutdownGracefully();</span><br><span class="line">            workerGroup.shutdownGracefully();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">NettyServerHandler</span> <span class="keyword">extends</span> <span class="title class_">ChannelInboundHandlerAdapter</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">channelRead</span><span class="params">(ChannelHandlerContext ctx, Object msg)</span> &#123;</span><br><span class="line">        <span class="type">ByteBuf</span> <span class="variable">byteBuf</span> <span class="operator">=</span> (ByteBuf) msg;</span><br><span class="line">        log.info(<span class="string">&quot;收到客户端消息:&#123;&#125;&quot;</span>,byteBuf.toString(CharsetUtil.UTF_8));</span><br><span class="line">        <span class="comment">// 现在通过通道给客户端回消息</span></span><br><span class="line">        ctx.writeAndFlush(Unpooled.copiedBuffer(<span class="string">&quot;客户端你好：我收到你的消息了&quot;</span>, CharsetUtil.UTF_8));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">channelReadComplete</span><span class="params">(ChannelHandlerContext ctx)</span> &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>客户端</p>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.netty.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.netty.bootstrap.Bootstrap;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.ByteBuf;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.Unpooled;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.*;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.nio.NioEventLoopGroup;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.SocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.nio.NioSocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.util.CharsetUtil;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NettyClient</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        <span class="type">EventLoopGroup</span> <span class="variable">group</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NioEventLoopGroup</span>();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">Bootstrap</span> <span class="variable">bootstrap</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Bootstrap</span>();</span><br><span class="line">            <span class="comment">//设置相关参数</span></span><br><span class="line">            bootstrap.group(group)</span><br><span class="line">                    .channel(NioSocketChannel.class)</span><br><span class="line">                    .handler(<span class="keyword">new</span> <span class="title class_">ChannelInitializer</span>&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                        <span class="meta">@Override</span></span><br><span class="line">                        <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                            ch.pipeline().addLast(<span class="keyword">new</span> <span class="title class_">NettyClientHandler</span>()); <span class="comment">//加入自己的处理器</span></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">&quot;客户端 ok..&quot;</span>);</span><br><span class="line">            <span class="type">ChannelFuture</span> <span class="variable">channelFuture</span> <span class="operator">=</span> bootstrap.connect(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">9999</span>).sync();</span><br><span class="line">            <span class="comment">//给关闭通道进行监听</span></span><br><span class="line">            channelFuture.channel().closeFuture().sync();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line"></span><br><span class="line">            group.shutdownGracefully();</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">NettyClientHandler</span> <span class="keyword">extends</span> <span class="title class_">ChannelInboundHandlerAdapter</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">channelActive</span><span class="params">(ChannelHandlerContext ctx)</span> &#123;</span><br><span class="line">        ctx.writeAndFlush(Unpooled.copiedBuffer(<span class="string">&quot;服务端你好：我和你建立连接了&quot;</span>, CharsetUtil.UTF_8));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">channelRead</span><span class="params">(ChannelHandlerContext ctx, Object msg)</span> &#123;</span><br><span class="line">        <span class="type">ByteBuf</span> <span class="variable">byteBuf</span> <span class="operator">=</span> (ByteBuf) msg;</span><br><span class="line">        log.info(<span class="string">&quot;收到服务端消息:&#123;&#125;&quot;</span>, byteBuf.toString(CharsetUtil.UTF_8));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-]]></content>
-      <categories>
-        <category>后端</category>
-      </categories>
-      <tags>
-        <tag>Netty</tag>
-        <tag>Java</tag>
-        <tag>中间件</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>BIO|NIO|AIO的区别</title>
     <url>/2023/08/28/BIO-NIO-AIO%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
     <content><![CDATA[
@@ -147,6 +124,29 @@
       </tags>
   </entry>
   <entry>
+    <title>Netty(一)：Netty的诞生以及简短的Netty案例</title>
+    <url>/2023/08/29/Netty(%E4%B8%80)/</url>
+    <content><![CDATA[<h1 id="为什么Netty-会诞生"><a href="#为什么Netty-会诞生" class="headerlink" title="为什么Netty 会诞生"></a>为什么Netty 会诞生</h1><p>为了解决NIO 编码复杂，但是又想使用NIO，所以netty来了，netty 通过对nio复杂的api进行了封装，使得netty在具备高性能、高吞吐量、低延迟的前提下，还能方便开发人员进行快速开发。</p>
+<h1 id="有哪些使用场景"><a href="#有哪些使用场景" class="headerlink" title="有哪些使用场景"></a>有哪些使用场景</h1><h2 id="互联网行业"><a href="#互联网行业" class="headerlink" title="互联网行业"></a>互联网行业</h2><p>成为大多数中间件和rpc框架的底层通信组件，如dubbo、rocket mq</p>
+<h2 id="游戏行业"><a href="#游戏行业" class="headerlink" title="游戏行业"></a>游戏行业</h2><p>账号登陆服务器、地图服务器之间可以方便的通过 Netty 进行高性能的通信。</p>
+<h2 id="大数据领域"><a href="#大数据领域" class="headerlink" title="大数据领域"></a>大数据领域</h2><p>hadoop和序列化组件avro的rpc框架，都是采用netty作为底层通信组件</p>
+<h1 id="以下是以Netty写的简单demo"><a href="#以下是以Netty写的简单demo" class="headerlink" title="以下是以Netty写的简单demo"></a><strong>以下是以Netty写的简单demo</strong></h1><p>服务端</p>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.netty.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.netty.bootstrap.ServerBootstrap;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.ByteBuf;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.Unpooled;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.*;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.nio.NioEventLoopGroup;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.SocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.nio.NioServerSocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.util.CharsetUtil;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.flogger.Flogger;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NettyServer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        <span class="type">EventLoopGroup</span> <span class="variable">bossGroup</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NioEventLoopGroup</span>(<span class="number">1</span>);</span><br><span class="line">        <span class="type">EventLoopGroup</span> <span class="variable">workerGroup</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NioEventLoopGroup</span>(); <span class="comment">//8</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">ServerBootstrap</span> <span class="variable">bootstrap</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ServerBootstrap</span>();</span><br><span class="line">            bootstrap.group(bossGroup, workerGroup) <span class="comment">//设置两个线程组</span></span><br><span class="line">                    .channel(NioServerSocketChannel.class)</span><br><span class="line">                    .option(ChannelOption.SO_BACKLOG, <span class="number">128</span>)</span><br><span class="line">                    .childOption(ChannelOption.SO_KEEPALIVE, <span class="literal">true</span>)</span><br><span class="line">                    .childHandler(<span class="keyword">new</span> <span class="title class_">ChannelInitializer</span>&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                        <span class="meta">@Override</span></span><br><span class="line">                        <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                            log.info(<span class="string">&quot;客户端channel 初始化&quot;</span>);</span><br><span class="line">                            ch.pipeline().addLast(<span class="keyword">new</span> <span class="title class_">NettyServerHandler</span>());</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="type">ChannelFuture</span> <span class="variable">cf</span> <span class="operator">=</span> bootstrap.bind(<span class="number">9999</span>).sync();</span><br><span class="line">            log.info(<span class="string">&quot;服务启动成功....&quot;</span>);</span><br><span class="line">            cf.addListener((ChannelFutureListener) future -&gt; log.info(<span class="string">&quot;监听端口:&#123;&#125;&quot;</span>,future.isSuccess()));</span><br><span class="line">            cf.channel().closeFuture().sync();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            bossGroup.shutdownGracefully();</span><br><span class="line">            workerGroup.shutdownGracefully();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">NettyServerHandler</span> <span class="keyword">extends</span> <span class="title class_">ChannelInboundHandlerAdapter</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">channelRead</span><span class="params">(ChannelHandlerContext ctx, Object msg)</span> &#123;</span><br><span class="line">        <span class="type">ByteBuf</span> <span class="variable">byteBuf</span> <span class="operator">=</span> (ByteBuf) msg;</span><br><span class="line">        log.info(<span class="string">&quot;收到客户端消息:&#123;&#125;&quot;</span>,byteBuf.toString(CharsetUtil.UTF_8));</span><br><span class="line">        <span class="comment">// 现在通过通道给客户端回消息</span></span><br><span class="line">        ctx.writeAndFlush(Unpooled.copiedBuffer(<span class="string">&quot;客户端你好：我收到你的消息了&quot;</span>, CharsetUtil.UTF_8));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">channelReadComplete</span><span class="params">(ChannelHandlerContext ctx)</span> &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>客户端</p>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.netty.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.netty.bootstrap.Bootstrap;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.ByteBuf;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.Unpooled;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.*;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.nio.NioEventLoopGroup;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.SocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.nio.NioSocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.util.CharsetUtil;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NettyClient</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        <span class="type">EventLoopGroup</span> <span class="variable">group</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NioEventLoopGroup</span>();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">Bootstrap</span> <span class="variable">bootstrap</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Bootstrap</span>();</span><br><span class="line">            <span class="comment">//设置相关参数</span></span><br><span class="line">            bootstrap.group(group)</span><br><span class="line">                    .channel(NioSocketChannel.class)</span><br><span class="line">                    .handler(<span class="keyword">new</span> <span class="title class_">ChannelInitializer</span>&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                        <span class="meta">@Override</span></span><br><span class="line">                        <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                            ch.pipeline().addLast(<span class="keyword">new</span> <span class="title class_">NettyClientHandler</span>()); <span class="comment">//加入自己的处理器</span></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">&quot;客户端 ok..&quot;</span>);</span><br><span class="line">            <span class="type">ChannelFuture</span> <span class="variable">channelFuture</span> <span class="operator">=</span> bootstrap.connect(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">9999</span>).sync();</span><br><span class="line">            <span class="comment">//给关闭通道进行监听</span></span><br><span class="line">            channelFuture.channel().closeFuture().sync();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line"></span><br><span class="line">            group.shutdownGracefully();</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">NettyClientHandler</span> <span class="keyword">extends</span> <span class="title class_">ChannelInboundHandlerAdapter</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">channelActive</span><span class="params">(ChannelHandlerContext ctx)</span> &#123;</span><br><span class="line">        ctx.writeAndFlush(Unpooled.copiedBuffer(<span class="string">&quot;服务端你好：我和你建立连接了&quot;</span>, CharsetUtil.UTF_8));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">channelRead</span><span class="params">(ChannelHandlerContext ctx, Object msg)</span> &#123;</span><br><span class="line">        <span class="type">ByteBuf</span> <span class="variable">byteBuf</span> <span class="operator">=</span> (ByteBuf) msg;</span><br><span class="line">        log.info(<span class="string">&quot;收到服务端消息:&#123;&#125;&quot;</span>, byteBuf.toString(CharsetUtil.UTF_8));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+]]></content>
+      <categories>
+        <category>后端</category>
+      </categories>
+      <tags>
+        <tag>Netty</tag>
+        <tag>Java</tag>
+        <tag>中间件</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Netty(二)Netty的组件</title>
     <url>/2023/08/29/Netty(%E4%BA%8C)Netty%E7%9A%84%E7%BB%84%E4%BB%B6/</url>
     <content><![CDATA[<h1 id="Netty组件"><a href="#Netty组件" class="headerlink" title="Netty组件"></a>Netty组件</h1><h2 id="ServerBootstrap-Bootstrap"><a href="#ServerBootstrap-Bootstrap" class="headerlink" title="ServerBootstrap&#x2F;Bootstrap"></a>ServerBootstrap&#x2F;Bootstrap</h2><p>这两个属于引导类加载器，它们分别是服务端启动配置引导类和客户端启动配置引导类。通过这个引导类 串联netty所有的组件</p>
@@ -225,238 +225,6 @@
         <tag>Netty</tag>
         <tag>Java</tag>
         <tag>中间件</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>STM32(二)GPIO</title>
-    <url>/2023/09/24/STM32(%E4%BA%8C)GPIO/</url>
-    <content><![CDATA[<h1 id="GPIO介绍"><a href="#GPIO介绍" class="headerlink" title="GPIO介绍"></a>GPIO介绍</h1><p><strong>GPIO（General Purpose Input Output）通用输入输出口</strong></p>
-<ul>
-<li>可配置为8种输入输出模式</li>
-<li>引脚电平：0V~3.3V，部分引脚可容忍5V</li>
-<li>输出模式下可控制端口输出高低电平，用以驱动LED、控制蜂鸣器、模拟通信协议输出时序等</li>
-<li>输入模式下可读取端口的高低电平或电压，用于读取按键输入、外接模块电平信号输入、ADC电压采集、模拟通信协议接收数据等</li>
-</ul>
-<h1 id="GPIO基本结构"><a href="#GPIO基本结构" class="headerlink" title="GPIO基本结构"></a>GPIO基本结构</h1><p>寄存器上一节有讲过，用于<strong>存储和操作数据</strong></p>
-<p>驱动器是用来<strong>增加信号的驱动能力</strong>的，如果要进行点灯这样的操作，就需要驱动器来负责增大驱动能力</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220004237221.png"
-                      alt="image-20250220004237221"
-                ></p>
-<h1 id="GPIO位结构"><a href="#GPIO位结构" class="headerlink" title="GPIO位结构"></a>GPIO位结构</h1><p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220010948159.png"
-                      alt="image-20250220010948159"
-                ></p>
-<h2 id="Vdd和Vss"><a href="#Vdd和Vss" class="headerlink" title="Vdd和Vss"></a>Vdd和Vss</h2><p>在STM32微控制器中，Vdd 和 Vss 是芯片的电源引脚，用于为芯片供电。例如：</p>
-<ul>
-<li><strong>Vdd</strong>：连接到 3.3V 电源。</li>
-<li><strong>Vss</strong>：连接到地，0V（GND）</li>
-</ul>
-<h2 id="保护二极管"><a href="#保护二极管" class="headerlink" title="保护二极管"></a>保护二极管</h2><p>保护二极管：<strong>保护内部电路</strong>。当输入电压在0~3.3V之间，两个保护二极管均不会导通，这时二极管对电路没有影响</p>
-<p><strong>大于3.3V</strong>，上方的保护二极管会被导通，电流会从I&#x2F;O引脚流向Vdd</p>
-<p><strong>小于0V</strong>（负电压），下方的保护二极管会被导通，电流会从Vss流向I&#x2F;O引脚（电流会从<strong>高电压流向低电压</strong>，即从0–&gt;-5）</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220011914846.png"
-                      alt="image-20250220011914846"
-                ></p>
-<h2 id="上拉-下拉输入模式"><a href="#上拉-下拉输入模式" class="headerlink" title="上拉&#x2F;下拉输入模式"></a>上拉&#x2F;下拉输入模式</h2><blockquote>
-<p><strong>上面导通</strong>，下面断开，就是<strong>上拉输入模式</strong></p>
-<p><strong>下面导通</strong>，上面断开，就是<strong>下拉输入模式</strong></p>
-<p>两个<strong>都断开</strong>，就是<strong>浮空输入模式</strong></p>
-</blockquote>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220012523523.png"
-                      alt="image-20250220012523523"
-                ></p>
-<h3 id="上拉和下拉的作用"><a href="#上拉和下拉的作用" class="headerlink" title="上拉和下拉的作用"></a>上拉和下拉的作用</h3><p><strong>作用</strong>：为了给输入提供一个默认的输入电平的</p>
-<p>因为对应一个数字的端口，输入不是高电平就是低电平</p>
-<p>那如果输入引脚啥都不接，到底是算高电平还是还是低电平呢？</p>
-<blockquote>
-<p>这就不好说了，对于实际情况，如果输入什么都不接，这时输入就会处于一种<strong>浮空状态</strong>（即不稳定的状态）</p>
-<p>这时引脚的输入电平就极易受外界干扰而改变，受到一点扰动就会变化</p>
-<p><strong>为了避免引脚悬空（浮空）导致的输入数据不确定</strong>，<strong>我们就需要在这里加上 上拉或者下拉电阻</strong></p>
-<ul>
-<li><p>如果接入上拉电阻，当引脚悬空时，还有上拉电阻来保证引脚的高电平，</p>
-<p>所以上拉输入可以默认为高电平的输入模式</p>
-</li>
-<li><p>如果接入下拉电阻，当引脚悬空时，还有下拉电阻来保证引脚的低电平，</p>
-<p>所以下拉输入可以默认为低电平的输入模式</p>
-</li>
-</ul>
-</blockquote>
-<p><strong>注意：</strong>这个上拉电阻和下拉电阻的阻值都是比较大的，是一种弱上拉和弱下拉，<strong>目的是尽量不影响正常的输入操作</strong></p>
-<h2 id="施密特触发器"><a href="#施密特触发器" class="headerlink" title="施密特触发器"></a>施密特触发器</h2><p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220145720533.png"
-                      alt="image-20250220145720533"
-                ></p>
-<p>*<strong>这里应该是施密特触发器，只是画错了</strong></p>
-<p>作用：对输入电压进行整形</p>
-<p>执行逻辑：如果输入电压<strong>大于</strong>某一阈值，输出就会瞬间升为高电平</p>
-<p>​				   如果输入电压<strong>小于</strong>某一阈值，输出就会瞬间升为低电平</p>
-<p>举例：因为这个引脚的波形是外界输入的，虽然是数字信号，实际情况下可能会产生各种失真</p>
-<blockquote>
-<p>这里用了两个<strong>比较阈值</strong>（绿线）来进行判断，中间留有一定的变化范围，这样可以有效避免因信号波动造成的输出抖动现象，经过施密特触发器整形的波形就可以直接写入<strong>输入数据寄存器</strong>了</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220155155148.png"
-                      alt="image-20250220155155148"
-                ></p>
-</blockquote>
-<h2 id="输入数据寄存器"><a href="#输入数据寄存器" class="headerlink" title="输入数据寄存器"></a>输入数据寄存器</h2><p>通过程序就能读取输入数据寄存器中的某一位数据，就可以知道端口的输入电平了</p>
-<h2 id="片上外设"><a href="#片上外设" class="headerlink" title="片上外设"></a>片上外设</h2><p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220161732886.png"
-                      alt="image-20250220161732886"
-                ></p>
-<ul>
-<li><strong>模拟输入</strong> 连接到ADC上的，因为ADC需要<strong>接收模拟量</strong>，所以这根线是<strong>接到施密特触发器前</strong></li>
-<li><strong>复用功能输入</strong> 这个是连接到其他需要读取端口的外设上的 ，比如串口的输入引脚等，这根线接收的是<strong>数字量</strong>，所以这根线是<strong>接到施密特触发器后</strong></li>
-</ul>
-<h2 id="位设置-位清除寄存器"><a href="#位设置-位清除寄存器" class="headerlink" title="位设置&#x2F;位清除寄存器"></a>位设置&#x2F;位清除寄存器</h2><p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220162910089.png"
-                      alt="image-20250220162910089"
-                ></p>
-<p>位置1：</p>
-<p>如果我们要对某一位进行置1的操作，在<strong>位设置寄存器</strong>的对应位写1即可，剩下不需要操作的位写0。</p>
-<p>这样它内部就会有电路，自动将输出数据奇存器中对应位置为1，而剩下写0的位则保持不变。</p>
-<p>这样就保证了只操作其中某一位而不影响其它位，并且这是一步到位的操作</p>
-<p>清0：</p>
-<p>如果想对某一位进行清0的操作，就在<strong>位清除寄存器</strong>的对应位写1即可，这样内部电路就会把这一位清0了</p>
-<h2 id="MOS管"><a href="#MOS管" class="headerlink" title="MOS管"></a>MOS管</h2><p>MOS管就是一种电子开关</p>
-<p>我们的信号来控制开关的导通和关闭，开关负责将IO口接到VDD或者VSS</p>
-<p>在这里可以选择<strong>推挽、开漏或关闭</strong>三种输出方式</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220163202677.png"
-                      alt="image-20250220163202677"
-                ></p>
-<h1 id="GPIO的八种工作模式"><a href="#GPIO的八种工作模式" class="headerlink" title="GPIO的八种工作模式"></a>GPIO的八种工作模式</h1><p>通过配置GPIO的端口配置寄存器 ，端口可以配置成以下8种模式</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220171704985.png"
-                      alt="image-20250220171704985"
-                ></p>
-<h2 id="浮空-上拉-下拉输入"><a href="#浮空-上拉-下拉输入" class="headerlink" title="浮空&#x2F;上拉&#x2F;下拉输入"></a>浮空&#x2F;上拉&#x2F;下拉输入</h2><p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220173316357.png"
-                      alt="image-20250220173316357"
-                ></p>
-<h2 id="模拟输入"><a href="#模拟输入" class="headerlink" title="模拟输入"></a>模拟输入</h2><p>当我们使用ADC的时候，将引脚配置为模拟输入就行了，其他时候，一般用不到模拟输入</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220173337171.png"
-                      alt="image-20250220173337171"
-                ></p>
-<h2 id="开漏输出和推挽输出"><a href="#开漏输出和推挽输出" class="headerlink" title="开漏输出和推挽输出"></a>开漏输出和推挽输出</h2><p>输出是由输出数据寄存器控制的</p>
-<blockquote>
-<ol>
-<li>如果P-MOS无效、N-MOS有效，就是<strong>开漏输出</strong></li>
-<li>如果P-MOS和N-MOS都有效，就是<strong>推挽输出</strong></li>
-<li>另外，在输出模式下，输入模式也是有效的（也就是配置成输出模式，既可以输出，也可以输入）</li>
-</ol>
-</blockquote>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220173828386.png"
-                      alt="image-20250220173828386"
-                ></p>
-<h2 id="复用开漏-推挽输出"><a href="#复用开漏-推挽输出" class="headerlink" title="复用开漏&#x2F;推挽输出"></a>复用开漏&#x2F;推挽输出</h2><p>复用输出时，引脚的控制权转移到了片上外设，<strong>由片上外设来控制</strong></p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220173949426.png"
-                      alt="image-20250220173949426"
-                ></p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ul>
-<li>其实在GPIO的这8种模式中，除了<strong>模拟输入</strong>这个模式<strong>会关闭数字的输入功能</strong>，在其他的7个模式中，所有的输入都是有效的</li>
-</ul>
-<h1 id="LED和蜂鸣器"><a href="#LED和蜂鸣器" class="headerlink" title="LED和蜂鸣器"></a>LED和蜂鸣器</h1><ul>
-<li>LED：发光二极管，正向通电点亮，反向通电不亮</li>
-<li>有源蜂鸣器：内部自带振荡源，将正负极接上直流电压即可持续发声，频率固定</li>
-<li>无源蜂鸣器：内部不带振荡源，需要控制器提供振荡脉冲才可发声，调整提供振荡脉冲的频率，可发出不同频率的声音</li>
-</ul>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220175918205.png"
-                      alt="image-20250220175918205"
-                ></p>
-<h2 id="如何接"><a href="#如何接" class="headerlink" title="如何接"></a>如何接</h2><p>GPIO在推挽输出模式下，高低电平均有比较强的驱动能力，所以在这里，这两种接法均可</p>
-<p>但是在单片机的电路里，一般倾向使用<strong>第一种接法</strong></p>
-<p>因为很多单片机或者芯片，都使用了<strong>高电平弱驱动</strong>，<strong>低电平强驱动</strong>的规则，这样可以一定程度上<strong>避免高低电平打架</strong></p>
-<p>所以如果高电平驱动能力弱，那就不能使用第二种连接方法了（开漏输出模式下，高电平没有驱动能力，不适用）</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/STM32-%E4%BA%8C-GPIO/image-20250220175925353.png"
-                      alt="image-20250220175925353"
-                ></p>
-]]></content>
-      <categories>
-        <category>嵌入式</category>
-      </categories>
-      <tags>
-        <tag>STM32</tag>
-        <tag>GPIO</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Swagger2</title>
-    <url>/2023/09/20/Swagger2/</url>
-    <content><![CDATA[<p>现如今，前后端分离已经逐渐成为互联网项目一种标准的开发方式，前端与后端交给不同的人员开发，</p>
-<p>但是项目开发中的沟通成本也随之升高，这部分沟通成本主要在于前端开发人员与后端开发人员对WebAPI接口的沟通，Swagger2 就可以很好地解决，它可以动态生成Api接口文档，降低沟通成本，促进项目高效开发。</p>
-<p>有时候定义了文档，代码中修改了一点小的东西，总会忘记同步修改文档，时间长了，自己都比较蒙，还需要看一下代码才能发现问题。</p>
-<h1 id="Swagger介绍"><a href="#Swagger介绍" class="headerlink" title="Swagger介绍"></a>Swagger介绍</h1><p>Spring Boot 可以集成Swagger，生成Swagger接口，Spring Boot是Java领域的神器，它是Spring项目下快速构建<br>项目的框架</p>
-<h1 id="集成Swagger2"><a href="#集成Swagger2" class="headerlink" title="集成Swagger2"></a>集成Swagger2</h1><div class="code-container" data-rel="Xml"><figure class="iseeu highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencys</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!--swagger2--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-swagger2<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.8.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-swagger-ui<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.8.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencys</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
-
-<h1 id="Swagger的基础注解介绍"><a href="#Swagger的基础注解介绍" class="headerlink" title="Swagger的基础注解介绍"></a>Swagger的基础注解介绍</h1><p>swagger通过注解生成接口文档，包括接口名、请求方法、参数、返回信息的等等。</p>
-<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">@Api：修饰整个类，描述Controller的作用</span><br><span class="line">@ApiOperation：描述一个类的一个方法，或者说一个接口</span><br><span class="line">@ApiParam：单个参数描述</span><br><span class="line">@ApiModel：用对象实体来作为入参</span><br><span class="line">@ApiProperty：用对象接实体收参数时，描述对象的一个字段</span><br><span class="line">@ApiResponse：HTTP响应其中1个描述</span><br><span class="line">@ApiResponses：HTTP响应整体描述</span><br><span class="line">@ApiIgnore：使用该注解忽略这个API</span><br><span class="line">@ApiError ：发生错误返回的信息</span><br><span class="line">@ApiImplicitParam：一个请求参数</span><br><span class="line">@ApiImplicitParams： 多个请求参数</span><br></pre></td></tr></table></figure></div>
-
-<h3 id="Api"><a href="#Api" class="headerlink" title="@Api"></a>@Api</h3><p>修饰整个类，描述Controller的作用</p>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/swagger&quot;)</span></span><br><span class="line"><span class="meta">@Api(value = &quot;swagger2的demo例子&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SwaggerController</span> &#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<h3 id="ApiOperation"><a href="#ApiOperation" class="headerlink" title="@ApiOperation"></a>@ApiOperation</h3><p>用于描述一个方法或者接口</p>
-<p>可以添加的参数形式：@ApiOperation(value &#x3D; “接口说明”, httpMethod &#x3D; “接口请求方式”, response &#x3D; “接口返回参数类型”, notes &#x3D; “接口发布说明”）</p>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/swagger&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="meta">@ApiOperation(value = &quot;根据用户名获取用户的信息&quot;,notes = &quot;查询数据库中的记录&quot;,httpMethod = &quot;POST&quot;,response = String.class)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getUserInfo</span><span class="params">(String userName)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;1234&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<h3 id="ApiImplicitParam-一个请求参数"><a href="#ApiImplicitParam-一个请求参数" class="headerlink" title="@ApiImplicitParam 一个请求参数"></a>@ApiImplicitParam 一个请求参数</h3><p>一个请求参数，@ApiImplicitParam(required &#x3D; “是否必须参数”, name &#x3D; “参数名称”, value &#x3D; “参数具体描述”,dateType&#x3D;“变量类型”,paramType&#x3D;”请求方式”）</p>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@ApiImplicitParam(name = &quot;userName&quot;,value = &quot;用户名&quot;,required = true,dataType = &quot;String&quot;,paramType = &quot;query&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getUserInfo</span><span class="params">(String userName)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;1234&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<h3 id="ApiImplicitParams-多个请求参数"><a href="#ApiImplicitParams-多个请求参数" class="headerlink" title="@ApiImplicitParams 多个请求参数"></a>@ApiImplicitParams 多个请求参数</h3><div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@ApiImplicitParams(&#123;</span></span><br><span class="line"><span class="meta">    @ApiImplicitParam(name = &quot;nickName&quot;,value = &quot;用户的昵称&quot;,paramType = &quot;query&quot;,dataType = &quot;String&quot;,required = true),</span></span><br><span class="line"><span class="meta">    @ApiImplicitParam(name = &quot;id&quot;,value = &quot;用户的ID&quot;,paramType = &quot;query&quot;,dataType = &quot;Integer&quot;,required = true)</span></span><br><span class="line"><span class="meta">&#125;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">getUserInfoByNickName</span><span class="params">(String nickName, Integer id)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;1234&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<h1 id="UI界面"><a href="#UI界面" class="headerlink" title="UI界面"></a>UI界面</h1><p>运行程序 ：<code>http://localhost:8080/swagger-ui.html</code></p>
-<img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/2023/09/20/Swagger2/image-20250120221858691.png"
-                      class="" title="image-20250120221858691"
-                >
-]]></content>
-      <categories>
-        <category>后端</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>Swagger2</tag>
       </tags>
   </entry>
   <entry>
@@ -751,174 +519,211 @@
       </tags>
   </entry>
   <entry>
-    <title>欢迎来到我的博客</title>
-    <url>/2023/08/26/%E6%AC%A2%E8%BF%8E%E6%9D%A5%E5%88%B0%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2/</url>
-    <content><![CDATA[
-  <div class="note-large blue">
-    <div class="notel-title rounded-t-lg p-3 font-bold text-lg flex flex-row gap-2 items-center">
-      <p>自我介绍</p>
-
-    </div>
-    <div class="notel-content">
-      <p>本人是一个技术上的小菜鸡，该博客只为记录自己的学习历程。</p>
-<p>若发现笔记里面存在不对的地方，欢迎大家留言讨论。</p>
-<p>最后，希望能和大家共同进步~</p>
-
-    </div>
-  </div>
-]]></content>
-  </entry>
-  <entry>
-    <title>规则引擎Drools</title>
-    <url>/2023/09/13/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8EDrools/</url>
-    <content><![CDATA[<h2 id="1-规则引擎概述"><a href="#1-规则引擎概述" class="headerlink" title="1 规则引擎概述"></a>1 规则引擎概述</h2><ul>
-<li>规则引擎核心思想：将应用程序中的业务决策部分分离出来</li>
-<li>使得业务规则的变更不需要修改项目代码、重启服务器就可以在线上环境立即生效</li>
+    <title>STM32(二)GPIO</title>
+    <url>/2023/09/24/STM32-%E4%BA%8C-GPIO/</url>
+    <content><![CDATA[<h1 id="GPIO介绍"><a href="#GPIO介绍" class="headerlink" title="GPIO介绍"></a>GPIO介绍</h1><p><strong>GPIO（General Purpose Input Output）通用输入输出口</strong></p>
+<ul>
+<li>可配置为8种输入输出模式</li>
+<li>引脚电平：0V~3.3V，部分引脚可容忍5V</li>
+<li>输出模式下可控制端口输出高低电平，用以驱动LED、控制蜂鸣器、模拟通信协议输出时序等</li>
+<li>输入模式下可读取端口的高低电平或电压，用于读取按键输入、外接模块电平信号输入、ADC电压采集、模拟通信协议接收数据等</li>
 </ul>
-<h2 id="2-Drools入门案例"><a href="#2-Drools入门案例" class="headerlink" title="2 Drools入门案例"></a>2 Drools入门案例</h2><h3 id="第一步-创建SpringBoot工程"><a href="#第一步-创建SpringBoot工程" class="headerlink" title="第一步 创建SpringBoot工程"></a>第一步 创建SpringBoot工程</h3><img  
+<h1 id="GPIO基本结构"><a href="#GPIO基本结构" class="headerlink" title="GPIO基本结构"></a>GPIO基本结构</h1><p>寄存器上一节有讲过，用于<strong>存储和操作数据</strong></p>
+<p>驱动器是用来<strong>增加信号的驱动能力</strong>的，如果要进行点灯这样的操作，就需要驱动器来负责增大驱动能力</p>
+<img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/2023/09/13/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8EDrools/image-20240529202037057.png"
-                      class="" title="image-20240529202037057"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220004237221.png"
+                      class="" title="image-20250220004237221"
+                >
+
+<h1 id="GPIO位结构"><a href="#GPIO位结构" class="headerlink" title="GPIO位结构"></a>GPIO位结构</h1><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220010948159.png"
+                      class="" title="image-20250220010948159"
+                >
+
+<h2 id="Vdd和Vss"><a href="#Vdd和Vss" class="headerlink" title="Vdd和Vss"></a>Vdd和Vss</h2><p>在STM32微控制器中，Vdd 和 Vss 是芯片的电源引脚，用于为芯片供电。例如：</p>
+<ul>
+<li><strong>Vdd</strong>：连接到 3.3V 电源。</li>
+<li><strong>Vss</strong>：连接到地，0V（GND）</li>
+</ul>
+<h2 id="保护二极管"><a href="#保护二极管" class="headerlink" title="保护二极管"></a>保护二极管</h2><p>保护二极管：<strong>保护内部电路</strong>。当输入电压在0~3.3V之间，两个保护二极管均不会导通，这时二极管对电路没有影响</p>
+<p><strong>大于3.3V</strong>，上方的保护二极管会被导通，电流会从I&#x2F;O引脚流向Vdd</p>
+<p><strong>小于0V</strong>（负电压），下方的保护二极管会被导通，电流会从Vss流向I&#x2F;O引脚（电流会从<strong>高电压流向低电压</strong>，即从0–&gt;-5）</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220011914846.png"
+                      class="" title="image-20250220011914846"
+                >
+
+<h2 id="上拉-下拉输入模式"><a href="#上拉-下拉输入模式" class="headerlink" title="上拉&#x2F;下拉输入模式"></a>上拉&#x2F;下拉输入模式</h2><blockquote>
+<p><strong>上面导通</strong>，下面断开，就是<strong>上拉输入模式</strong></p>
+<p><strong>下面导通</strong>，上面断开，就是<strong>下拉输入模式</strong></p>
+<p>两个<strong>都断开</strong>，就是<strong>浮空输入模式</strong></p>
+</blockquote>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220012523523.png"
+                      class="" title="image-20250220012523523"
+                >
+
+<h3 id="上拉和下拉的作用"><a href="#上拉和下拉的作用" class="headerlink" title="上拉和下拉的作用"></a>上拉和下拉的作用</h3><p><strong>作用</strong>：为了给输入提供一个默认的输入电平的</p>
+<p>因为对应一个数字的端口，输入不是高电平就是低电平</p>
+<p>那如果输入引脚啥都不接，到底是算高电平还是还是低电平呢？</p>
+<blockquote>
+<p>这就不好说了，对于实际情况，如果输入什么都不接，这时输入就会处于一种<strong>浮空状态</strong>（即不稳定的状态）</p>
+<p>这时引脚的输入电平就极易受外界干扰而改变，受到一点扰动就会变化</p>
+<p><strong>为了避免引脚悬空（浮空）导致的输入数据不确定</strong>，<strong>我们就需要在这里加上 上拉或者下拉电阻</strong></p>
+<ul>
+<li><p>如果接入上拉电阻，当引脚悬空时，还有上拉电阻来保证引脚的高电平，</p>
+<p>所以上拉输入可以默认为高电平的输入模式</p>
+</li>
+<li><p>如果接入下拉电阻，当引脚悬空时，还有下拉电阻来保证引脚的低电平，</p>
+<p>所以下拉输入可以默认为低电平的输入模式</p>
+</li>
+</ul>
+</blockquote>
+<p><strong>注意：</strong>这个上拉电阻和下拉电阻的阻值都是比较大的，是一种弱上拉和弱下拉，<strong>目的是尽量不影响正常的输入操作</strong></p>
+<h2 id="施密特触发器"><a href="#施密特触发器" class="headerlink" title="施密特触发器"></a>施密特触发器</h2><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220145720533.png"
+                      class="" title="image-20250220145720533"
+                >
+
+<p>*<strong>这里应该是施密特触发器，只是画错了</strong></p>
+<p>作用：对输入电压进行整形</p>
+<p>执行逻辑：如果输入电压<strong>大于</strong>某一阈值，输出就会瞬间升为高电平</p>
+<p>​				   如果输入电压<strong>小于</strong>某一阈值，输出就会瞬间升为低电平</p>
+<p>举例：因为这个引脚的波形是外界输入的，虽然是数字信号，实际情况下可能会产生各种失真</p>
+<blockquote>
+<p>这里用了两个<strong>比较阈值</strong>（绿线）来进行判断，中间留有一定的变化范围，这样可以有效避免因信号波动造成的输出抖动现象，经过施密特触发器整形的波形就可以直接写入<strong>输入数据寄存器</strong>了</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220155155148.png"
+                      class="" title="image-20250220155155148"
+                >
+</blockquote>
+<h2 id="输入数据寄存器"><a href="#输入数据寄存器" class="headerlink" title="输入数据寄存器"></a>输入数据寄存器</h2><p>通过程序就能读取输入数据寄存器中的某一位数据，就可以知道端口的输入电平了</p>
+<h2 id="片上外设"><a href="#片上外设" class="headerlink" title="片上外设"></a>片上外设</h2><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220161732886.png"
+                      class="" title="image-20250220161732886"
+                >
+
+<ul>
+<li><strong>模拟输入</strong> 连接到ADC上的，因为ADC需要<strong>接收模拟量</strong>，所以这根线是<strong>接到施密特触发器前</strong></li>
+<li><strong>复用功能输入</strong> 这个是连接到其他需要读取端口的外设上的 ，比如串口的输入引脚等，这根线接收的是<strong>数字量</strong>，所以这根线是<strong>接到施密特触发器后</strong></li>
+</ul>
+<h2 id="位设置-位清除寄存器"><a href="#位设置-位清除寄存器" class="headerlink" title="位设置&#x2F;位清除寄存器"></a>位设置&#x2F;位清除寄存器</h2><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220162910089.png"
+                      class="" title="image-20250220162910089"
+                >
+
+<p>位置1：</p>
+<p>如果我们要对某一位进行置1的操作，在<strong>位设置寄存器</strong>的对应位写1即可，剩下不需要操作的位写0。</p>
+<p>这样它内部就会有电路，自动将输出数据奇存器中对应位置为1，而剩下写0的位则保持不变。</p>
+<p>这样就保证了只操作其中某一位而不影响其它位，并且这是一步到位的操作</p>
+<p>清0：</p>
+<p>如果想对某一位进行清0的操作，就在<strong>位清除寄存器</strong>的对应位写1即可，这样内部电路就会把这一位清0了</p>
+<h2 id="MOS管"><a href="#MOS管" class="headerlink" title="MOS管"></a>MOS管</h2><p>MOS管就是一种电子开关</p>
+<p>我们的信号来控制开关的导通和关闭，开关负责将IO口接到VDD或者VSS</p>
+<p>在这里可以选择<strong>推挽、开漏或关闭</strong>三种输出方式</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220163202677.png"
+                      class="" title="image-20250220163202677"
+                >
+
+<h1 id="GPIO的八种工作模式"><a href="#GPIO的八种工作模式" class="headerlink" title="GPIO的八种工作模式"></a>GPIO的八种工作模式</h1><p>通过配置GPIO的端口配置寄存器 ，端口可以配置成以下8种模式</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220171704985.png"
+                      class="" title="image-20250220171704985"
+                >
+
+<h2 id="浮空-上拉-下拉输入"><a href="#浮空-上拉-下拉输入" class="headerlink" title="浮空&#x2F;上拉&#x2F;下拉输入"></a>浮空&#x2F;上拉&#x2F;下拉输入</h2><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220173316357.png"
+                      class="" title="image-20250220173316357"
+                >
+
+<h2 id="模拟输入"><a href="#模拟输入" class="headerlink" title="模拟输入"></a>模拟输入</h2><p>当我们使用ADC的时候，将引脚配置为模拟输入就行了，其他时候，一般用不到模拟输入</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220173337171.png"
+                      class="" title="image-20250220173337171"
+                >
+
+<h2 id="开漏输出和推挽输出"><a href="#开漏输出和推挽输出" class="headerlink" title="开漏输出和推挽输出"></a>开漏输出和推挽输出</h2><p>输出是由输出数据寄存器控制的</p>
+<blockquote>
+<ol>
+<li>如果P-MOS无效、N-MOS有效，就是<strong>开漏输出</strong></li>
+<li>如果P-MOS和N-MOS都有效，就是<strong>推挽输出</strong></li>
+<li>另外，在输出模式下，输入模式也是有效的（也就是配置成输出模式，既可以输出，也可以输入）</li>
+</ol>
+</blockquote>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220173828386.png"
+                      class="" title="image-20250220173828386"
+                >
+
+<h2 id="复用开漏-推挽输出"><a href="#复用开漏-推挽输出" class="headerlink" title="复用开漏&#x2F;推挽输出"></a>复用开漏&#x2F;推挽输出</h2><p>复用输出时，引脚的控制权转移到了片上外设，<strong>由片上外设来控制</strong></p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220173949426.png"
+                      class="" title="image-20250220173949426"
                 >
 
 
 
-<h3 id="第二步-引入Drools相关依赖"><a href="#第二步-引入Drools相关依赖" class="headerlink" title="第二步 引入Drools相关依赖"></a>第二步 引入Drools相关依赖</h3><div class="code-container" data-rel="Xml"><figure class="iseeu highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">java.version</span>&gt;</span>17<span class="tag">&lt;/<span class="name">java.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">drools.version</span>&gt;</span>8.41.0.Final<span class="tag">&lt;/<span class="name">drools.version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.drools<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>drools-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;drools.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.drools<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>drools-compiler<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;drools.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.drools<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>drools-decisiontables<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;drools.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.drools<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>drools-mvel<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;drools.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
-
-
-
-<h3 id="第三步-创建Drools配置类"><a href="#第三步-创建Drools配置类" class="headerlink" title="第三步 创建Drools配置类"></a>第三步 创建Drools配置类</h3><div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 规则引擎配置类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DroolsConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">KieServices</span> <span class="variable">kieServices</span> <span class="operator">=</span> KieServices.Factory.get();</span><br><span class="line">    <span class="comment">//制定规则文件的路径</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">RULES_CUSTOMER_RULES_DRL</span> <span class="operator">=</span> <span class="string">&quot;rules/order.drl&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> KieContainer <span class="title function_">kieContainer</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">//获得Kie容器对象</span></span><br><span class="line">        <span class="type">KieFileSystem</span> <span class="variable">kieFileSystem</span> <span class="operator">=</span> kieServices.newKieFileSystem();</span><br><span class="line">        kieFileSystem.write(ResourceFactory.newClassPathResource(RULES_CUSTOMER_RULES_DRL));</span><br><span class="line"></span><br><span class="line">        <span class="type">KieBuilder</span> <span class="variable">kieBuilder</span> <span class="operator">=</span> kieServices.newKieBuilder(kieFileSystem);</span><br><span class="line">        kieBuilder.buildAll();</span><br><span class="line"></span><br><span class="line">        <span class="type">KieModule</span> <span class="variable">kieModule</span> <span class="operator">=</span> kieBuilder.getKieModule();</span><br><span class="line">        <span class="type">KieContainer</span> <span class="variable">kieContainer</span> <span class="operator">=</span> kieServices.newKieContainer(kieModule.getReleaseId());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> kieContainer;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-
-
-<h3 id="第四步-创建实体类"><a href="#第四步-创建实体类" class="headerlink" title="第四步 创建实体类"></a>第四步 创建实体类</h3><div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Order</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">double</span> amout;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">double</span> score;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">getAmout</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> amout;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setAmout</span><span class="params">(<span class="type">double</span> amout)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.amout = amout;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">getScore</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> score;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setScore</span><span class="params">(<span class="type">double</span> score)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.score = score;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-
-
-<h3 id="第五步-创建规则文件"><a href="#第五步-创建规则文件" class="headerlink" title="第五步 创建规则文件"></a>第五步 创建规则文件</h3><div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//订单积分规则</span></span><br><span class="line"><span class="keyword">package</span> com.asjm.drools.order</span><br><span class="line"><span class="keyword">import</span> com.asjm.drools.bean.Order</span><br><span class="line"></span><br><span class="line"><span class="comment">//规则一：100元以下 不加分</span></span><br><span class="line">rule <span class="string">&quot;order_rule_1&quot;</span></span><br><span class="line">    when</span><br><span class="line">        $order:Order(amout &lt; <span class="number">100</span>)</span><br><span class="line">    then</span><br><span class="line">        $order.setScore(<span class="number">0</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;成功匹配到规则一：100元以下 不加分&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"><span class="comment">//规则二：100元 - 500元 加100分</span></span><br><span class="line">rule <span class="string">&quot;order_rule_2&quot;</span></span><br><span class="line">    when</span><br><span class="line">        $order:Order(amout &gt;= <span class="number">100</span> &amp;&amp; amout &lt; <span class="number">500</span>)</span><br><span class="line">    then</span><br><span class="line">         $order.setScore(<span class="number">100</span>);</span><br><span class="line">         System.out.println(<span class="string">&quot;成功匹配到规则二：100元 - 500元 加100分&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"><span class="comment">//规则三：500元 - 1000元 加500分</span></span><br><span class="line">rule <span class="string">&quot;order_rule_3&quot;</span></span><br><span class="line">    when</span><br><span class="line">        $order:Order(amout &gt;= <span class="number">500</span> &amp;&amp; amout &lt; <span class="number">1000</span>)</span><br><span class="line">    then</span><br><span class="line">         $order.setScore(<span class="number">500</span>);</span><br><span class="line">         System.out.println(<span class="string">&quot;成功匹配到规则三：500元 - 1000元 加500分&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"><span class="comment">//规则四：1000元以上 加1000分</span></span><br><span class="line">rule <span class="string">&quot;order_rule_4&quot;</span></span><br><span class="line">    when</span><br><span class="line">        $order:Order(amout &gt;= <span class="number">1000</span>)</span><br><span class="line">    then</span><br><span class="line">         $order.setScore(<span class="number">1000</span>);</span><br><span class="line">         System.out.println(<span class="string">&quot;成功匹配到规则四：1000元以上 加1000分&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
-
-
-
-<h3 id="第六步-测试"><a href="#第六步-测试" class="headerlink" title="第六步 测试"></a>第六步 测试</h3><div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DroolsDemosApplicationTests</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> KieContainer kieContainer;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="comment">//从Kie容器对象中获取会话对象</span></span><br><span class="line">        <span class="type">KieSession</span> <span class="variable">session</span> <span class="operator">=</span> kieContainer.newKieSession();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//Fact对象，事实对象</span></span><br><span class="line">        <span class="type">Order</span> <span class="variable">order</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Order</span>();</span><br><span class="line">        order.setAmout(<span class="number">300</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//将Order对象插入到工作内存中</span></span><br><span class="line">        session.insert(order);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//激活规则，由Drools框架自动进行规则匹配，如果规则匹配成功，则执行当前规则</span></span><br><span class="line">        session.fireAllRules();</span><br><span class="line">        <span class="comment">//关闭会话</span></span><br><span class="line">        session.dispose();</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;订单金额：&quot;</span> + order.getAmout() +</span><br><span class="line">                <span class="string">&quot;，添加积分：&quot;</span> + order.getScore());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-
-
-<h2 id="3-规则引擎组成和执行流程"><a href="#3-规则引擎组成和执行流程" class="headerlink" title="3 规则引擎组成和执行流程"></a>3 规则引擎组成和执行流程</h2><p>drools规则引擎由以下三部分构成：</p>
-<ul>
-<li>Working Memory（工作内存）</li>
-<li>Rule Base（规则库）</li>
-<li>Inference Engine（推理引擎）</li>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ul>
+<li>其实在GPIO的这8种模式中，除了<strong>模拟输入</strong>这个模式<strong>会关闭数字的输入功能</strong>，在其他的7个模式中，所有的输入都是有效的</li>
 </ul>
-<p>其中Inference Engine（推理引擎）又包括：</p>
-<ul>
-<li>Pattern Matcher（匹配器）     具体匹配哪一个规则，由这个完成</li>
-<li>Agenda(议程)</li>
-<li>Execution Engine（执行引擎）</li>
-</ul>
-<h2 id="3-Drools基础语法"><a href="#3-Drools基础语法" class="headerlink" title="3 Drools基础语法"></a>3 Drools基础语法</h2><h3 id="3-1-规则文件组成"><a href="#3-1-规则文件组成" class="headerlink" title="3.1 规则文件组成"></a>3.1 规则文件组成</h3><ul>
-<li>在使用Drools时非常重要的一个工作就是编写规则文件，通常规则文件的后缀为.drl</li>
+<h1 id="LED和蜂鸣器"><a href="#LED和蜂鸣器" class="headerlink" title="LED和蜂鸣器"></a>LED和蜂鸣器</h1><ul>
+<li>LED：发光二极管，正向通电点亮，反向通电不亮</li>
+<li>有源蜂鸣器：内部自带振荡源，将正负极接上直流电压即可持续发声，频率固定</li>
+<li>无源蜂鸣器：内部不带振荡源，需要控制器提供振荡脉冲才可发声，调整提供振荡脉冲的频率，可发出不同频率的声音</li>
 </ul>
 <img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="/2023/09/13/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8EDrools/image-20240529204819712.png"
-                      class="" title="image-20240529204819712"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220175918205.png"
+                      class="" title="image-20250220175918205"
                 >
 
-<h3 id="3-2-规则体语法结构"><a href="#3-2-规则体语法结构" class="headerlink" title="3.2 规则体语法结构"></a>3.2 规则体语法结构</h3><ul>
-<li><p>规则体语法结构 开始位置 rule，结束位置 end</p>
-</li>
-<li><p>结构组成：</p>
-</li>
-</ul>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line">rule <span class="string">&quot;ruleName&quot;</span></span><br><span class="line">    attributes</span><br><span class="line">    when</span><br><span class="line">        LHS </span><br><span class="line">    then</span><br><span class="line">        RHS</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
-
-<p><strong>rule</strong>：关键字，表示规则开始，参数为规则的唯一名称。</p>
-<p><strong>attributes</strong>：规则属性，是rule与when之间的参数，为可选项。</p>
-<p><strong>when</strong>：关键字，后面跟规则的条件部分。</p>
-<p><strong>LHS</strong>(Left Hand Side)：是规则的条件部分的通用名称。它由零个或多个条件元素组成。<strong>如果LHS为空，则它将被视为始终为true的条件元素</strong>。  （左手边）</p>
-<p><strong>then</strong>：关键字，后面跟规则的结果部分。</p>
-<p><strong>RHS</strong>(Right Hand Side)：是规则的后果或行动部分的通用名称。 （右手边）</p>
-<p><strong>end</strong>：关键字，表示一个规则结束。</p>
-<h3 id="3-3-模式匹配"><a href="#3-3-模式匹配" class="headerlink" title="3.3 模式匹配"></a>3.3 模式匹配</h3><div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line">rule <span class="string">&quot;rule_1&quot;</span></span><br><span class="line">	when</span><br><span class="line">		$order:Order(amout &gt;<span class="number">100</span> &amp;&amp; amout &lt; <span class="number">500</span>)</span><br><span class="line">	then</span><br><span class="line">		$order.setScore(<span class="number">100</span>);</span><br><span class="line">		 System.out.println(<span class="string">&quot;成功匹配到规则二：100元 - 500元 加100分&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
-
-
-
-<h3 id="3-4-Drools内置方法"><a href="#3-4-Drools内置方法" class="headerlink" title="3.4 Drools内置方法"></a>3.4 Drools内置方法</h3><ul>
-<li><p>Drools提供了一些方法可以用来操作工作内存中的数据，<strong>操作完成后规则引擎会重新进行相关规则的匹配，</strong>原来没有匹配成功的规则在我们修改数据完成后有可能就会匹配成功了。</p>
-</li>
-<li><p><strong>修改 update方法</strong></p>
-</li>
-</ul>
-<p><strong>update方法的作用是更新工作内存中的数据，并让相关的规则重新匹配。</strong></p>
-<p>参数：</p>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Fact对象，事实对象</span></span><br><span class="line"><span class="type">Order</span> <span class="variable">order</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Order</span>();</span><br><span class="line">order.setAmout(<span class="number">30</span>);</span><br></pre></td></tr></table></figure></div>
-
-<p>规则：</p>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line">rule <span class="string">&quot;order_rule_1&quot;</span></span><br><span class="line">	when</span><br><span class="line">		$order:Order(amout &lt; <span class="number">100</span>)</span><br><span class="line">	then</span><br><span class="line">		$order.setAmout(<span class="number">150</span>);</span><br><span class="line">		update($order)</span><br><span class="line">		System.out.println(<span class="string">&quot;成功匹配到规则一：100元以下 不加分&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">rule <span class="string">&quot;order_rule_2&quot;</span></span><br><span class="line">	when</span><br><span class="line">		$order:Order(amout &gt;= <span class="number">100</span> &amp;&amp; amout &lt; <span class="number">500</span>)</span><br><span class="line">	then</span><br><span class="line">		$order.setScore(<span class="number">100</span>);</span><br><span class="line">		System.out.println(<span class="string">&quot;成功匹配到规则二：100元 - 500元 加100分&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
-
-
-
-<ul>
-<li><strong>添加 insert方法</strong></li>
-</ul>
-<p><strong>insert方法的作用是向工作内存中插入数据，并让相关的规则重新匹配</strong></p>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line">rule <span class="string">&quot;order_rule_1&quot;</span></span><br><span class="line">	when</span><br><span class="line">		$order:Order(amout &lt; <span class="number">100</span>)</span><br><span class="line">	then</span><br><span class="line">		<span class="type">Order</span> <span class="variable">order</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Order</span>();</span><br><span class="line">		order.setAmout(<span class="number">150</span>);</span><br><span class="line">		insert(order);</span><br><span class="line">		System.out.println(<span class="string">&quot;成功匹配到规则一：100元以下 不加分&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">rule <span class="string">&quot;order_rule_2&quot;</span></span><br><span class="line">	when</span><br><span class="line">		$order:Order(amout &gt;= <span class="number">100</span> &amp;&amp; amout &lt; <span class="number">500</span>)</span><br><span class="line">	then</span><br><span class="line">		$order.setScore(<span class="number">100</span>);</span><br><span class="line">		System.out.println(<span class="string">&quot;成功匹配到规则二：100元 - 500元 加100分&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
-
-
-
-<ul>
-<li><strong>删除 retract方法</strong></li>
-</ul>
-<p><strong>retract方法的作用是删除工作内存中的数据，并让相关的规则重新匹配。</strong></p>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//规则一：100元以下 不加分</span></span><br><span class="line">rule <span class="string">&quot;order_rule_1&quot;</span></span><br><span class="line">    when</span><br><span class="line">        $order:Order(amout &lt; <span class="number">100</span>)</span><br><span class="line">    then</span><br><span class="line">        <span class="title function_">retract</span><span class="params">($order)</span>      <span class="comment">//retract方法的作用是删除工作内存中的Fact对象，会导致相关规则重新匹配</span></span><br><span class="line">        System.out.println(<span class="string">&quot;成功匹配到规则一：100元以下 不加分&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
-
-
-
-<h2 id="4-Drools规则属性"><a href="#4-Drools规则属性" class="headerlink" title="4 Drools规则属性"></a>4 Drools规则属性</h2><h3 id="4-1-salience属性"><a href="#4-1-salience属性" class="headerlink" title="4.1 salience属性"></a>4.1 salience属性</h3><ul>
-<li>salience属性用于指定规则的执行优先级，<strong>取值类型为Integer</strong>。<strong>数值越大越优先执行</strong></li>
-<li>没有添加执行优先级，执行由上到下执行</li>
-</ul>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.order</span><br><span class="line"></span><br><span class="line">rule <span class="string">&quot;rule_1&quot;</span></span><br><span class="line">    when</span><br><span class="line">        <span class="title function_">eval</span><span class="params">(<span class="literal">true</span>)</span></span><br><span class="line">    then</span><br><span class="line">        System.out.println(<span class="string">&quot;规则rule_1触发&quot;</span>);</span><br><span class="line">end</span><br><span class="line">    </span><br><span class="line">rule <span class="string">&quot;rule_2&quot;</span></span><br><span class="line">    when</span><br><span class="line">        <span class="title function_">eval</span><span class="params">(<span class="literal">true</span>)</span></span><br><span class="line">    then</span><br><span class="line">        System.out.println(<span class="string">&quot;规则rule_2触发&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">rule <span class="string">&quot;rule_3&quot;</span></span><br><span class="line">    when</span><br><span class="line">        <span class="title function_">eval</span><span class="params">(<span class="literal">true</span>)</span></span><br><span class="line">    then</span><br><span class="line">        System.out.println(<span class="string">&quot;规则rule_3触发&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
-
-
-
-<ul>
-<li>添加优先级</li>
-</ul>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.order</span><br><span class="line"></span><br><span class="line">rule <span class="string">&quot;rule_1&quot;</span></span><br><span class="line">    salience <span class="number">9</span></span><br><span class="line">    when</span><br><span class="line">        <span class="title function_">eval</span><span class="params">(<span class="literal">true</span>)</span></span><br><span class="line">    then</span><br><span class="line">        System.out.println(<span class="string">&quot;规则rule_1触发&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">rule <span class="string">&quot;rule_2&quot;</span></span><br><span class="line">    salience <span class="number">10</span></span><br><span class="line">    when</span><br><span class="line">        <span class="title function_">eval</span><span class="params">(<span class="literal">true</span>)</span></span><br><span class="line">    then</span><br><span class="line">        System.out.println(<span class="string">&quot;规则rule_2触发&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">rule <span class="string">&quot;rule_3&quot;</span></span><br><span class="line">    salience <span class="number">8</span></span><br><span class="line">    when</span><br><span class="line">        <span class="title function_">eval</span><span class="params">(<span class="literal">true</span>)</span></span><br><span class="line">    then</span><br><span class="line">        System.out.println(<span class="string">&quot;规则rule_3触发&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
-
-
-
-<h3 id="4-2-no-loop属性"><a href="#4-2-no-loop属性" class="headerlink" title="4.2 no-loop属性"></a>4.2 no-loop属性</h3><ul>
-<li><strong>no-loop属性用于防止死循环</strong></li>
-</ul>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//订单积分规则</span></span><br><span class="line"><span class="keyword">package</span> com.order</span><br><span class="line"><span class="keyword">import</span> com.asjm.drools.model.Order</span><br><span class="line"></span><br><span class="line"><span class="comment">//规则一：100元以下 不加分</span></span><br><span class="line">rule <span class="string">&quot;order_rule_1&quot;</span></span><br><span class="line">    no-loop <span class="literal">true</span>         <span class="comment">//防止陷入死循环</span></span><br><span class="line">    when</span><br><span class="line">        $order:Order(amout &lt; <span class="number">100</span>)</span><br><span class="line">    then</span><br><span class="line">        $order.setScore(<span class="number">0</span>);</span><br><span class="line">        update($order)</span><br><span class="line">        System.out.println(<span class="string">&quot;成功匹配到规则一：100元以下 不加分&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
-
-
-
-<h2 id="5-Drools高级语法"><a href="#5-Drools高级语法" class="headerlink" title="5 Drools高级语法"></a>5 Drools高级语法</h2><ul>
-<li><p>global关键字用于在规则文件中<strong>定义全局变量</strong>，它可以让应用程序的对象在规则文件中能够被访问。</p>
-</li>
-<li><p>语法结构为：<strong>global 对象类型 对象名称</strong></p>
-</li>
-</ul>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//订单积分规则</span></span><br><span class="line"><span class="keyword">package</span> com.order</span><br><span class="line"><span class="keyword">import</span> com.asjm.drools.bean.Order1</span><br><span class="line"></span><br><span class="line">global com.asjm.drools.bean.Integral integral;</span><br><span class="line"></span><br><span class="line"><span class="comment">//规则一：100元以下 不加分</span></span><br><span class="line">rule <span class="string">&quot;order_rule_1&quot;</span></span><br><span class="line">    no-loop <span class="literal">true</span>         <span class="comment">//防止陷入死循环</span></span><br><span class="line">    when</span><br><span class="line">        $order:Order1(amout &lt; <span class="number">100</span>)</span><br><span class="line">    then</span><br><span class="line">        integral.setScore(<span class="number">10</span>);</span><br><span class="line">        update($order)</span><br><span class="line">        System.out.println(<span class="string">&quot;成功匹配到规则一：100元以下 不加分&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
-
-
-
-<p>测试</p>
-<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DroolsDemosApplicationTests</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> KieContainer kieContainer;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="comment">//从Kie容器对象中获取会话对象</span></span><br><span class="line">        <span class="type">KieSession</span> <span class="variable">session</span> <span class="operator">=</span> kieContainer.newKieSession();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//Fact对象，事实对象</span></span><br><span class="line">        <span class="type">Order1</span> <span class="variable">order</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Order1</span>();</span><br><span class="line">        order.setAmout(<span class="number">30</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//全局变量</span></span><br><span class="line">        <span class="type">Integral</span> <span class="variable">integral</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Integral</span>();</span><br><span class="line">        session.setGlobal(<span class="string">&quot;integral&quot;</span>,integral);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//将Order对象插入到工作内存中</span></span><br><span class="line">        session.insert(order);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//激活规则，由Drools框架自动进行规则匹配，如果规则匹配成功，则执行当前规则</span></span><br><span class="line">        session.fireAllRules();</span><br><span class="line">        <span class="comment">//关闭会话</span></span><br><span class="line">        session.dispose();</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;订单金额：&quot;</span> + order.getAmout() +</span><br><span class="line">                <span class="string">&quot;，添加积分：&quot;</span> + integral.getScore());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
+<h2 id="如何接"><a href="#如何接" class="headerlink" title="如何接"></a>如何接</h2><p>GPIO在推挽输出模式下，高低电平均有比较强的驱动能力，所以在这里，这两种接法均可</p>
+<p>但是在单片机的电路里，一般倾向使用<strong>第一种接法</strong></p>
+<p>因为很多单片机或者芯片，都使用了<strong>高电平弱驱动</strong>，<strong>低电平强驱动</strong>的规则，这样可以一定程度上<strong>避免高低电平打架</strong></p>
+<p>所以如果高电平驱动能力弱，那就不能使用第二种连接方法了（开漏输出模式下，高电平没有驱动能力，不适用）</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/24/STM32-%E4%BA%8C-GPIO/image-20250220175925353.png"
+                      class="" title="image-20250220175925353"
+                >
 ]]></content>
       <categories>
-        <category>后端</category>
+        <category>嵌入式</category>
       </categories>
       <tags>
-        <tag>Java</tag>
-        <tag>中间件</tag>
-        <tag>Drools</tag>
+        <tag>STM32</tag>
+        <tag>GPIO</tag>
       </tags>
   </entry>
   <entry>
@@ -1499,6 +1304,217 @@
       </categories>
       <tags>
         <tag>密码学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Swagger2</title>
+    <url>/2023/09/20/Swagger2/</url>
+    <content><![CDATA[<p>现如今，前后端分离已经逐渐成为互联网项目一种标准的开发方式，前端与后端交给不同的人员开发，</p>
+<p>但是项目开发中的沟通成本也随之升高，这部分沟通成本主要在于前端开发人员与后端开发人员对WebAPI接口的沟通，Swagger2 就可以很好地解决，它可以动态生成Api接口文档，降低沟通成本，促进项目高效开发。</p>
+<p>有时候定义了文档，代码中修改了一点小的东西，总会忘记同步修改文档，时间长了，自己都比较蒙，还需要看一下代码才能发现问题。</p>
+<h1 id="Swagger介绍"><a href="#Swagger介绍" class="headerlink" title="Swagger介绍"></a>Swagger介绍</h1><p>Spring Boot 可以集成Swagger，生成Swagger接口，Spring Boot是Java领域的神器，它是Spring项目下快速构建<br>项目的框架</p>
+<h1 id="集成Swagger2"><a href="#集成Swagger2" class="headerlink" title="集成Swagger2"></a>集成Swagger2</h1><div class="code-container" data-rel="Xml"><figure class="iseeu highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencys</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!--swagger2--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-swagger2<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.8.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-swagger-ui<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.8.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencys</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<h1 id="Swagger的基础注解介绍"><a href="#Swagger的基础注解介绍" class="headerlink" title="Swagger的基础注解介绍"></a>Swagger的基础注解介绍</h1><p>swagger通过注解生成接口文档，包括接口名、请求方法、参数、返回信息的等等。</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">@Api：修饰整个类，描述Controller的作用</span><br><span class="line">@ApiOperation：描述一个类的一个方法，或者说一个接口</span><br><span class="line">@ApiParam：单个参数描述</span><br><span class="line">@ApiModel：用对象实体来作为入参</span><br><span class="line">@ApiProperty：用对象接实体收参数时，描述对象的一个字段</span><br><span class="line">@ApiResponse：HTTP响应其中1个描述</span><br><span class="line">@ApiResponses：HTTP响应整体描述</span><br><span class="line">@ApiIgnore：使用该注解忽略这个API</span><br><span class="line">@ApiError ：发生错误返回的信息</span><br><span class="line">@ApiImplicitParam：一个请求参数</span><br><span class="line">@ApiImplicitParams： 多个请求参数</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="Api"><a href="#Api" class="headerlink" title="@Api"></a>@Api</h3><p>修饰整个类，描述Controller的作用</p>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/swagger&quot;)</span></span><br><span class="line"><span class="meta">@Api(value = &quot;swagger2的demo例子&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SwaggerController</span> &#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="ApiOperation"><a href="#ApiOperation" class="headerlink" title="@ApiOperation"></a>@ApiOperation</h3><p>用于描述一个方法或者接口</p>
+<p>可以添加的参数形式：@ApiOperation(value &#x3D; “接口说明”, httpMethod &#x3D; “接口请求方式”, response &#x3D; “接口返回参数类型”, notes &#x3D; “接口发布说明”）</p>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/swagger&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="meta">@ApiOperation(value = &quot;根据用户名获取用户的信息&quot;,notes = &quot;查询数据库中的记录&quot;,httpMethod = &quot;POST&quot;,response = String.class)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getUserInfo</span><span class="params">(String userName)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;1234&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="ApiImplicitParam-一个请求参数"><a href="#ApiImplicitParam-一个请求参数" class="headerlink" title="@ApiImplicitParam 一个请求参数"></a>@ApiImplicitParam 一个请求参数</h3><p>一个请求参数，@ApiImplicitParam(required &#x3D; “是否必须参数”, name &#x3D; “参数名称”, value &#x3D; “参数具体描述”,dateType&#x3D;“变量类型”,paramType&#x3D;”请求方式”）</p>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@ApiImplicitParam(name = &quot;userName&quot;,value = &quot;用户名&quot;,required = true,dataType = &quot;String&quot;,paramType = &quot;query&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getUserInfo</span><span class="params">(String userName)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;1234&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="ApiImplicitParams-多个请求参数"><a href="#ApiImplicitParams-多个请求参数" class="headerlink" title="@ApiImplicitParams 多个请求参数"></a>@ApiImplicitParams 多个请求参数</h3><div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@ApiImplicitParams(&#123;</span></span><br><span class="line"><span class="meta">    @ApiImplicitParam(name = &quot;nickName&quot;,value = &quot;用户的昵称&quot;,paramType = &quot;query&quot;,dataType = &quot;String&quot;,required = true),</span></span><br><span class="line"><span class="meta">    @ApiImplicitParam(name = &quot;id&quot;,value = &quot;用户的ID&quot;,paramType = &quot;query&quot;,dataType = &quot;Integer&quot;,required = true)</span></span><br><span class="line"><span class="meta">&#125;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">getUserInfoByNickName</span><span class="params">(String nickName, Integer id)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;1234&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h1 id="UI界面"><a href="#UI界面" class="headerlink" title="UI界面"></a>UI界面</h1><p>运行程序 ：<code>http://localhost:8080/swagger-ui.html</code></p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/20/Swagger2/image-20250120221858691.png"
+                      class="" title="image-20250120221858691"
+                >
+]]></content>
+      <categories>
+        <category>后端</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>Swagger2</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>欢迎来到我的博客</title>
+    <url>/2023/08/26/%E6%AC%A2%E8%BF%8E%E6%9D%A5%E5%88%B0%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2/</url>
+    <content><![CDATA[
+  <div class="note-large blue">
+    <div class="notel-title rounded-t-lg p-3 font-bold text-lg flex flex-row gap-2 items-center">
+      <p>自我介绍</p>
+
+    </div>
+    <div class="notel-content">
+      <p>本人是一个技术上的小菜鸡，该博客只为记录自己的学习历程。</p>
+<p>若发现笔记里面存在不对的地方，欢迎大家留言讨论。</p>
+<p>最后，希望能和大家共同进步~</p>
+
+    </div>
+  </div>
+]]></content>
+  </entry>
+  <entry>
+    <title>规则引擎Drools</title>
+    <url>/2023/09/13/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8EDrools/</url>
+    <content><![CDATA[<h2 id="1-规则引擎概述"><a href="#1-规则引擎概述" class="headerlink" title="1 规则引擎概述"></a>1 规则引擎概述</h2><ul>
+<li>规则引擎核心思想：将应用程序中的业务决策部分分离出来</li>
+<li>使得业务规则的变更不需要修改项目代码、重启服务器就可以在线上环境立即生效</li>
+</ul>
+<h2 id="2-Drools入门案例"><a href="#2-Drools入门案例" class="headerlink" title="2 Drools入门案例"></a>2 Drools入门案例</h2><h3 id="第一步-创建SpringBoot工程"><a href="#第一步-创建SpringBoot工程" class="headerlink" title="第一步 创建SpringBoot工程"></a>第一步 创建SpringBoot工程</h3><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/13/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8EDrools/image-20240529202037057.png"
+                      class="" title="image-20240529202037057"
+                >
+
+
+
+<h3 id="第二步-引入Drools相关依赖"><a href="#第二步-引入Drools相关依赖" class="headerlink" title="第二步 引入Drools相关依赖"></a>第二步 引入Drools相关依赖</h3><div class="code-container" data-rel="Xml"><figure class="iseeu highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">java.version</span>&gt;</span>17<span class="tag">&lt;/<span class="name">java.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">drools.version</span>&gt;</span>8.41.0.Final<span class="tag">&lt;/<span class="name">drools.version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.drools<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>drools-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;drools.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.drools<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>drools-compiler<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;drools.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.drools<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>drools-decisiontables<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;drools.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.drools<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>drools-mvel<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;drools.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+
+
+<h3 id="第三步-创建Drools配置类"><a href="#第三步-创建Drools配置类" class="headerlink" title="第三步 创建Drools配置类"></a>第三步 创建Drools配置类</h3><div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 规则引擎配置类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DroolsConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">KieServices</span> <span class="variable">kieServices</span> <span class="operator">=</span> KieServices.Factory.get();</span><br><span class="line">    <span class="comment">//制定规则文件的路径</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">RULES_CUSTOMER_RULES_DRL</span> <span class="operator">=</span> <span class="string">&quot;rules/order.drl&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> KieContainer <span class="title function_">kieContainer</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">//获得Kie容器对象</span></span><br><span class="line">        <span class="type">KieFileSystem</span> <span class="variable">kieFileSystem</span> <span class="operator">=</span> kieServices.newKieFileSystem();</span><br><span class="line">        kieFileSystem.write(ResourceFactory.newClassPathResource(RULES_CUSTOMER_RULES_DRL));</span><br><span class="line"></span><br><span class="line">        <span class="type">KieBuilder</span> <span class="variable">kieBuilder</span> <span class="operator">=</span> kieServices.newKieBuilder(kieFileSystem);</span><br><span class="line">        kieBuilder.buildAll();</span><br><span class="line"></span><br><span class="line">        <span class="type">KieModule</span> <span class="variable">kieModule</span> <span class="operator">=</span> kieBuilder.getKieModule();</span><br><span class="line">        <span class="type">KieContainer</span> <span class="variable">kieContainer</span> <span class="operator">=</span> kieServices.newKieContainer(kieModule.getReleaseId());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> kieContainer;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h3 id="第四步-创建实体类"><a href="#第四步-创建实体类" class="headerlink" title="第四步 创建实体类"></a>第四步 创建实体类</h3><div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Order</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">double</span> amout;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">double</span> score;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">getAmout</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> amout;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setAmout</span><span class="params">(<span class="type">double</span> amout)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.amout = amout;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">getScore</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> score;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setScore</span><span class="params">(<span class="type">double</span> score)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.score = score;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h3 id="第五步-创建规则文件"><a href="#第五步-创建规则文件" class="headerlink" title="第五步 创建规则文件"></a>第五步 创建规则文件</h3><div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//订单积分规则</span></span><br><span class="line"><span class="keyword">package</span> com.asjm.drools.order</span><br><span class="line"><span class="keyword">import</span> com.asjm.drools.bean.Order</span><br><span class="line"></span><br><span class="line"><span class="comment">//规则一：100元以下 不加分</span></span><br><span class="line">rule <span class="string">&quot;order_rule_1&quot;</span></span><br><span class="line">    when</span><br><span class="line">        $order:Order(amout &lt; <span class="number">100</span>)</span><br><span class="line">    then</span><br><span class="line">        $order.setScore(<span class="number">0</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;成功匹配到规则一：100元以下 不加分&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"><span class="comment">//规则二：100元 - 500元 加100分</span></span><br><span class="line">rule <span class="string">&quot;order_rule_2&quot;</span></span><br><span class="line">    when</span><br><span class="line">        $order:Order(amout &gt;= <span class="number">100</span> &amp;&amp; amout &lt; <span class="number">500</span>)</span><br><span class="line">    then</span><br><span class="line">         $order.setScore(<span class="number">100</span>);</span><br><span class="line">         System.out.println(<span class="string">&quot;成功匹配到规则二：100元 - 500元 加100分&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"><span class="comment">//规则三：500元 - 1000元 加500分</span></span><br><span class="line">rule <span class="string">&quot;order_rule_3&quot;</span></span><br><span class="line">    when</span><br><span class="line">        $order:Order(amout &gt;= <span class="number">500</span> &amp;&amp; amout &lt; <span class="number">1000</span>)</span><br><span class="line">    then</span><br><span class="line">         $order.setScore(<span class="number">500</span>);</span><br><span class="line">         System.out.println(<span class="string">&quot;成功匹配到规则三：500元 - 1000元 加500分&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"><span class="comment">//规则四：1000元以上 加1000分</span></span><br><span class="line">rule <span class="string">&quot;order_rule_4&quot;</span></span><br><span class="line">    when</span><br><span class="line">        $order:Order(amout &gt;= <span class="number">1000</span>)</span><br><span class="line">    then</span><br><span class="line">         $order.setScore(<span class="number">1000</span>);</span><br><span class="line">         System.out.println(<span class="string">&quot;成功匹配到规则四：1000元以上 加1000分&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h3 id="第六步-测试"><a href="#第六步-测试" class="headerlink" title="第六步 测试"></a>第六步 测试</h3><div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DroolsDemosApplicationTests</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> KieContainer kieContainer;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="comment">//从Kie容器对象中获取会话对象</span></span><br><span class="line">        <span class="type">KieSession</span> <span class="variable">session</span> <span class="operator">=</span> kieContainer.newKieSession();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//Fact对象，事实对象</span></span><br><span class="line">        <span class="type">Order</span> <span class="variable">order</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Order</span>();</span><br><span class="line">        order.setAmout(<span class="number">300</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//将Order对象插入到工作内存中</span></span><br><span class="line">        session.insert(order);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//激活规则，由Drools框架自动进行规则匹配，如果规则匹配成功，则执行当前规则</span></span><br><span class="line">        session.fireAllRules();</span><br><span class="line">        <span class="comment">//关闭会话</span></span><br><span class="line">        session.dispose();</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;订单金额：&quot;</span> + order.getAmout() +</span><br><span class="line">                <span class="string">&quot;，添加积分：&quot;</span> + order.getScore());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h2 id="3-规则引擎组成和执行流程"><a href="#3-规则引擎组成和执行流程" class="headerlink" title="3 规则引擎组成和执行流程"></a>3 规则引擎组成和执行流程</h2><p>drools规则引擎由以下三部分构成：</p>
+<ul>
+<li>Working Memory（工作内存）</li>
+<li>Rule Base（规则库）</li>
+<li>Inference Engine（推理引擎）</li>
+</ul>
+<p>其中Inference Engine（推理引擎）又包括：</p>
+<ul>
+<li>Pattern Matcher（匹配器）     具体匹配哪一个规则，由这个完成</li>
+<li>Agenda(议程)</li>
+<li>Execution Engine（执行引擎）</li>
+</ul>
+<h2 id="3-Drools基础语法"><a href="#3-Drools基础语法" class="headerlink" title="3 Drools基础语法"></a>3 Drools基础语法</h2><h3 id="3-1-规则文件组成"><a href="#3-1-规则文件组成" class="headerlink" title="3.1 规则文件组成"></a>3.1 规则文件组成</h3><ul>
+<li>在使用Drools时非常重要的一个工作就是编写规则文件，通常规则文件的后缀为.drl</li>
+</ul>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2023/09/13/%E8%A7%84%E5%88%99%E5%BC%95%E6%93%8EDrools/image-20240529204819712.png"
+                      class="" title="image-20240529204819712"
+                >
+
+<h3 id="3-2-规则体语法结构"><a href="#3-2-规则体语法结构" class="headerlink" title="3.2 规则体语法结构"></a>3.2 规则体语法结构</h3><ul>
+<li><p>规则体语法结构 开始位置 rule，结束位置 end</p>
+</li>
+<li><p>结构组成：</p>
+</li>
+</ul>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line">rule <span class="string">&quot;ruleName&quot;</span></span><br><span class="line">    attributes</span><br><span class="line">    when</span><br><span class="line">        LHS </span><br><span class="line">    then</span><br><span class="line">        RHS</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>rule</strong>：关键字，表示规则开始，参数为规则的唯一名称。</p>
+<p><strong>attributes</strong>：规则属性，是rule与when之间的参数，为可选项。</p>
+<p><strong>when</strong>：关键字，后面跟规则的条件部分。</p>
+<p><strong>LHS</strong>(Left Hand Side)：是规则的条件部分的通用名称。它由零个或多个条件元素组成。<strong>如果LHS为空，则它将被视为始终为true的条件元素</strong>。  （左手边）</p>
+<p><strong>then</strong>：关键字，后面跟规则的结果部分。</p>
+<p><strong>RHS</strong>(Right Hand Side)：是规则的后果或行动部分的通用名称。 （右手边）</p>
+<p><strong>end</strong>：关键字，表示一个规则结束。</p>
+<h3 id="3-3-模式匹配"><a href="#3-3-模式匹配" class="headerlink" title="3.3 模式匹配"></a>3.3 模式匹配</h3><div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line">rule <span class="string">&quot;rule_1&quot;</span></span><br><span class="line">	when</span><br><span class="line">		$order:Order(amout &gt;<span class="number">100</span> &amp;&amp; amout &lt; <span class="number">500</span>)</span><br><span class="line">	then</span><br><span class="line">		$order.setScore(<span class="number">100</span>);</span><br><span class="line">		 System.out.println(<span class="string">&quot;成功匹配到规则二：100元 - 500元 加100分&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h3 id="3-4-Drools内置方法"><a href="#3-4-Drools内置方法" class="headerlink" title="3.4 Drools内置方法"></a>3.4 Drools内置方法</h3><ul>
+<li><p>Drools提供了一些方法可以用来操作工作内存中的数据，<strong>操作完成后规则引擎会重新进行相关规则的匹配，</strong>原来没有匹配成功的规则在我们修改数据完成后有可能就会匹配成功了。</p>
+</li>
+<li><p><strong>修改 update方法</strong></p>
+</li>
+</ul>
+<p><strong>update方法的作用是更新工作内存中的数据，并让相关的规则重新匹配。</strong></p>
+<p>参数：</p>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Fact对象，事实对象</span></span><br><span class="line"><span class="type">Order</span> <span class="variable">order</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Order</span>();</span><br><span class="line">order.setAmout(<span class="number">30</span>);</span><br></pre></td></tr></table></figure></div>
+
+<p>规则：</p>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line">rule <span class="string">&quot;order_rule_1&quot;</span></span><br><span class="line">	when</span><br><span class="line">		$order:Order(amout &lt; <span class="number">100</span>)</span><br><span class="line">	then</span><br><span class="line">		$order.setAmout(<span class="number">150</span>);</span><br><span class="line">		update($order)</span><br><span class="line">		System.out.println(<span class="string">&quot;成功匹配到规则一：100元以下 不加分&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">rule <span class="string">&quot;order_rule_2&quot;</span></span><br><span class="line">	when</span><br><span class="line">		$order:Order(amout &gt;= <span class="number">100</span> &amp;&amp; amout &lt; <span class="number">500</span>)</span><br><span class="line">	then</span><br><span class="line">		$order.setScore(<span class="number">100</span>);</span><br><span class="line">		System.out.println(<span class="string">&quot;成功匹配到规则二：100元 - 500元 加100分&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
+
+
+
+<ul>
+<li><strong>添加 insert方法</strong></li>
+</ul>
+<p><strong>insert方法的作用是向工作内存中插入数据，并让相关的规则重新匹配</strong></p>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line">rule <span class="string">&quot;order_rule_1&quot;</span></span><br><span class="line">	when</span><br><span class="line">		$order:Order(amout &lt; <span class="number">100</span>)</span><br><span class="line">	then</span><br><span class="line">		<span class="type">Order</span> <span class="variable">order</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Order</span>();</span><br><span class="line">		order.setAmout(<span class="number">150</span>);</span><br><span class="line">		insert(order);</span><br><span class="line">		System.out.println(<span class="string">&quot;成功匹配到规则一：100元以下 不加分&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">rule <span class="string">&quot;order_rule_2&quot;</span></span><br><span class="line">	when</span><br><span class="line">		$order:Order(amout &gt;= <span class="number">100</span> &amp;&amp; amout &lt; <span class="number">500</span>)</span><br><span class="line">	then</span><br><span class="line">		$order.setScore(<span class="number">100</span>);</span><br><span class="line">		System.out.println(<span class="string">&quot;成功匹配到规则二：100元 - 500元 加100分&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
+
+
+
+<ul>
+<li><strong>删除 retract方法</strong></li>
+</ul>
+<p><strong>retract方法的作用是删除工作内存中的数据，并让相关的规则重新匹配。</strong></p>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//规则一：100元以下 不加分</span></span><br><span class="line">rule <span class="string">&quot;order_rule_1&quot;</span></span><br><span class="line">    when</span><br><span class="line">        $order:Order(amout &lt; <span class="number">100</span>)</span><br><span class="line">    then</span><br><span class="line">        <span class="title function_">retract</span><span class="params">($order)</span>      <span class="comment">//retract方法的作用是删除工作内存中的Fact对象，会导致相关规则重新匹配</span></span><br><span class="line">        System.out.println(<span class="string">&quot;成功匹配到规则一：100元以下 不加分&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h2 id="4-Drools规则属性"><a href="#4-Drools规则属性" class="headerlink" title="4 Drools规则属性"></a>4 Drools规则属性</h2><h3 id="4-1-salience属性"><a href="#4-1-salience属性" class="headerlink" title="4.1 salience属性"></a>4.1 salience属性</h3><ul>
+<li>salience属性用于指定规则的执行优先级，<strong>取值类型为Integer</strong>。<strong>数值越大越优先执行</strong></li>
+<li>没有添加执行优先级，执行由上到下执行</li>
+</ul>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.order</span><br><span class="line"></span><br><span class="line">rule <span class="string">&quot;rule_1&quot;</span></span><br><span class="line">    when</span><br><span class="line">        <span class="title function_">eval</span><span class="params">(<span class="literal">true</span>)</span></span><br><span class="line">    then</span><br><span class="line">        System.out.println(<span class="string">&quot;规则rule_1触发&quot;</span>);</span><br><span class="line">end</span><br><span class="line">    </span><br><span class="line">rule <span class="string">&quot;rule_2&quot;</span></span><br><span class="line">    when</span><br><span class="line">        <span class="title function_">eval</span><span class="params">(<span class="literal">true</span>)</span></span><br><span class="line">    then</span><br><span class="line">        System.out.println(<span class="string">&quot;规则rule_2触发&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">rule <span class="string">&quot;rule_3&quot;</span></span><br><span class="line">    when</span><br><span class="line">        <span class="title function_">eval</span><span class="params">(<span class="literal">true</span>)</span></span><br><span class="line">    then</span><br><span class="line">        System.out.println(<span class="string">&quot;规则rule_3触发&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
+
+
+
+<ul>
+<li>添加优先级</li>
+</ul>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.order</span><br><span class="line"></span><br><span class="line">rule <span class="string">&quot;rule_1&quot;</span></span><br><span class="line">    salience <span class="number">9</span></span><br><span class="line">    when</span><br><span class="line">        <span class="title function_">eval</span><span class="params">(<span class="literal">true</span>)</span></span><br><span class="line">    then</span><br><span class="line">        System.out.println(<span class="string">&quot;规则rule_1触发&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">rule <span class="string">&quot;rule_2&quot;</span></span><br><span class="line">    salience <span class="number">10</span></span><br><span class="line">    when</span><br><span class="line">        <span class="title function_">eval</span><span class="params">(<span class="literal">true</span>)</span></span><br><span class="line">    then</span><br><span class="line">        System.out.println(<span class="string">&quot;规则rule_2触发&quot;</span>);</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">rule <span class="string">&quot;rule_3&quot;</span></span><br><span class="line">    salience <span class="number">8</span></span><br><span class="line">    when</span><br><span class="line">        <span class="title function_">eval</span><span class="params">(<span class="literal">true</span>)</span></span><br><span class="line">    then</span><br><span class="line">        System.out.println(<span class="string">&quot;规则rule_3触发&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h3 id="4-2-no-loop属性"><a href="#4-2-no-loop属性" class="headerlink" title="4.2 no-loop属性"></a>4.2 no-loop属性</h3><ul>
+<li><strong>no-loop属性用于防止死循环</strong></li>
+</ul>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//订单积分规则</span></span><br><span class="line"><span class="keyword">package</span> com.order</span><br><span class="line"><span class="keyword">import</span> com.asjm.drools.model.Order</span><br><span class="line"></span><br><span class="line"><span class="comment">//规则一：100元以下 不加分</span></span><br><span class="line">rule <span class="string">&quot;order_rule_1&quot;</span></span><br><span class="line">    no-loop <span class="literal">true</span>         <span class="comment">//防止陷入死循环</span></span><br><span class="line">    when</span><br><span class="line">        $order:Order(amout &lt; <span class="number">100</span>)</span><br><span class="line">    then</span><br><span class="line">        $order.setScore(<span class="number">0</span>);</span><br><span class="line">        update($order)</span><br><span class="line">        System.out.println(<span class="string">&quot;成功匹配到规则一：100元以下 不加分&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h2 id="5-Drools高级语法"><a href="#5-Drools高级语法" class="headerlink" title="5 Drools高级语法"></a>5 Drools高级语法</h2><ul>
+<li><p>global关键字用于在规则文件中<strong>定义全局变量</strong>，它可以让应用程序的对象在规则文件中能够被访问。</p>
+</li>
+<li><p>语法结构为：<strong>global 对象类型 对象名称</strong></p>
+</li>
+</ul>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//订单积分规则</span></span><br><span class="line"><span class="keyword">package</span> com.order</span><br><span class="line"><span class="keyword">import</span> com.asjm.drools.bean.Order1</span><br><span class="line"></span><br><span class="line">global com.asjm.drools.bean.Integral integral;</span><br><span class="line"></span><br><span class="line"><span class="comment">//规则一：100元以下 不加分</span></span><br><span class="line">rule <span class="string">&quot;order_rule_1&quot;</span></span><br><span class="line">    no-loop <span class="literal">true</span>         <span class="comment">//防止陷入死循环</span></span><br><span class="line">    when</span><br><span class="line">        $order:Order1(amout &lt; <span class="number">100</span>)</span><br><span class="line">    then</span><br><span class="line">        integral.setScore(<span class="number">10</span>);</span><br><span class="line">        update($order)</span><br><span class="line">        System.out.println(<span class="string">&quot;成功匹配到规则一：100元以下 不加分&quot;</span>);</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
+
+
+
+<p>测试</p>
+<div class="code-container" data-rel="Java"><figure class="iseeu highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DroolsDemosApplicationTests</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> KieContainer kieContainer;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="comment">//从Kie容器对象中获取会话对象</span></span><br><span class="line">        <span class="type">KieSession</span> <span class="variable">session</span> <span class="operator">=</span> kieContainer.newKieSession();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//Fact对象，事实对象</span></span><br><span class="line">        <span class="type">Order1</span> <span class="variable">order</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Order1</span>();</span><br><span class="line">        order.setAmout(<span class="number">30</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//全局变量</span></span><br><span class="line">        <span class="type">Integral</span> <span class="variable">integral</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Integral</span>();</span><br><span class="line">        session.setGlobal(<span class="string">&quot;integral&quot;</span>,integral);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//将Order对象插入到工作内存中</span></span><br><span class="line">        session.insert(order);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//激活规则，由Drools框架自动进行规则匹配，如果规则匹配成功，则执行当前规则</span></span><br><span class="line">        session.fireAllRules();</span><br><span class="line">        <span class="comment">//关闭会话</span></span><br><span class="line">        session.dispose();</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;订单金额：&quot;</span> + order.getAmout() +</span><br><span class="line">                <span class="string">&quot;，添加积分：&quot;</span> + integral.getScore());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+]]></content>
+      <categories>
+        <category>后端</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>中间件</tag>
+        <tag>Drools</tag>
       </tags>
   </entry>
 </search>
